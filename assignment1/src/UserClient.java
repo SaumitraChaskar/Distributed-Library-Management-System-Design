@@ -1,20 +1,11 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.rmi.Naming;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
-import java.util.logging.Logger;
-
-import javax.sound.midi.Patch;
-import javax.swing.InputVerifier;
 
 public class UserClient {
 
@@ -75,7 +66,7 @@ public class UserClient {
             ServerInterface h = (ServerInterface)Naming.lookup(registryURL);
             System.out.println("Lookup completed " );
 
-            if(h.studentLogin(userID)){
+            if(h.userLogin(userID)){
                 System.out.println("Log in successfully");
                 Log(userID, getFormatDate() + " " + userID + " log in successfully");
             }

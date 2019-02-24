@@ -19,6 +19,6 @@ public interface ServerInterface extends Remote {
     String waitInQueue(String campusName, String userID, String itemID) throws RemoteException;
 
     boolean managerLogin(String adminID) throws RemoteException;
-    boolean studentLogin(String studentID) throws RemoteException;
+    boolean userLogin(String studentID) throws RemoteException;
 
 }

@@ -96,7 +96,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
             newAdmin.adminID = managerID;
             adminClients.add(newAdmin);
         }
-        System.out.println("adminClient " + managerID + " log in successfully");
+        System.out.println("ManagerClient [" + managerID + "] log in successfully");
         try {
             Log(Campus, getFormatDate() + " ManagerClient [" + managerID + "] log in successfully" );
         } catch (Exception e) {
@@ -105,7 +105,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
         return true;
     }
 
-    public boolean studentLogin(String studentID) {
+    public boolean userLogin(String studentID) {
 
         Boolean exist = false;
 
@@ -121,9 +121,9 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
             newStudent.borrowCount = 0;
             userClients.add(newStudent);
         }
-        System.out.println("userClient " + studentID + " log in");
+        System.out.println("UserClient " + studentID + " log in successfully");
         try {
-            Log(Campus, getFormatDate() + " UserClient " + studentID + " log in" );
+            Log(Campus, getFormatDate() + " UserClient " + studentID + " log in successfully" );
         } catch (Exception e) {
             e.printStackTrace();
         }
