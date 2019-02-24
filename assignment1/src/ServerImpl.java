@@ -1,7 +1,6 @@
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.net.SocketException;
-import java.rmi.RemoteException;
 import java.rmi.server.RemoteRef;
 import java.rmi.server.UnicastRemoteObject;
 import java.text.SimpleDateFormat;
@@ -659,6 +658,48 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
             }
         }
         return users;
+    }
+
+    @Override
+    public String listBorrowedItem(String userID){
+        String result = "";
+        result = listBorrowedLocal(userID);
+        String command = "listBorrowedItem(" + userID + ")";
+
+        try {
+            if(Campus.equals("CON")){
+                int serverport1 = 2235;
+                int serverport2 = 2236;
+                result += UDPRequest.UDPlistBorrowedItem(command, serverport1);
+                result += UDPRequest.UDPlistBorrowedItem(command, serverport2);
+            }
+            else if(Campus.equals("MCG")){
+                int serverport1 = 2234;
+                int serverport2 = 2236;
+                result += UDPRequest.UDPlistBorrowedItem(command, serverport1);
+                result += UDPRequest.UDPlistBorrowedItem(command, serverport2);
+            }
+            else if(Campus.equals("MON")){
+                int serverport1 = 2234;
+                int serverport2 = 2235;
+                result += UDPRequest.UDPlistBorrowedItem(command, serverport1);
+                result += UDPRequest.UDPlistBorrowedItem(command, serverport2);
+            }
+        } catch (SocketException e1) {
+            e1.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public String listBorrowedLocal(String userID){
+        String result = "";
+        for(HashMap.Entry<String,ArrayList<String>> entry : borrowedItems.entrySet()){
+            if(entry.getValue().contains(userID)){
+                result += entry.getKey()+" "+items.get(entry.getKey()).name+", ";
+            }
+        }
+        return result;
     }
 
 }

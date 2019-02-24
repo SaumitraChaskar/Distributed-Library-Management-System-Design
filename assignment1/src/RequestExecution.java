@@ -30,7 +30,7 @@ public class RequestExecution extends Thread{
     }
 
     public void run(){
-        String result = " ";
+        String result = "";
         if(message.startsWith("findItem")){
             result = UDPfindItem(message);
         }
@@ -46,6 +46,9 @@ public class RequestExecution extends Thread{
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
+        }
+        else if(message.startsWith("listBorrowedItem")){
+            result = UDPlistBorrowedItem(message);
         }
         byte []buffer = result.getBytes();
         DatagramPacket reply = new DatagramPacket(buffer, buffer.length,address,clientport);
@@ -91,5 +94,10 @@ public class RequestExecution extends Thread{
         return result;
     }
 
+    private String UDPlistBorrowedItem(String message) {
+        String userID = message.substring(message.indexOf("(") + 1,message.length() - 1);
+        String result = server.listBorrowedLocal(userID);
+        return result;
+    }
 
 }

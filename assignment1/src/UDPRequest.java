@@ -12,58 +12,63 @@ public class UDPRequest {
 
     public static String request(String command,int serverport) throws SocketException{
 
-        String replymsg = " ";
-        DatagramSocket requestsocket = new DatagramSocket();
+        String replyMsg = "";
+        DatagramSocket requestSocket = new DatagramSocket();
         try {
 
             byte []m = command.getBytes();
             InetAddress ahost = InetAddress.getByName("localhost");
             DatagramPacket request = new DatagramPacket(m,m.length,ahost,serverport);
-            requestsocket.send(request);
+            requestSocket.send(request);
 
             byte []buffer = new byte[1000];
             DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
-            requestsocket.receive(reply);
+            requestSocket.receive(reply);
 
             byte []message = new byte[reply.getLength()];
             System.arraycopy(buffer, 0, message, 0, reply.getLength());
-            replymsg = new String(message);
+            replyMsg = new String(message);
         }
         catch (IOException e) {
             System.out.println("IO: " + e.getMessage());
         }
 
         finally {
-            if(requestsocket != null)
-                requestsocket.close();
+            if(requestSocket != null)
+                requestSocket.close();
         }
 
-        return replymsg;
+        return replyMsg;
     }
 
-    public static String UDPborrowItem(String command,int serverport) throws SocketException{
-        String result = " ";
-        result = request(command, serverport);
-        return result;
-    }
-
-    public static String UDPwaitInQueue(String command,int serverport) throws SocketException{
-        String result = " ";
-        result = request(command, serverport);
-        return result;
-    }
-
-    public static String UDPfindItem(String command,int serverport) throws SocketException{
+    public static String UDPborrowItem(String command,int serverPort) throws SocketException{
         String result = "";
-        result = request(command, serverport);
+        result = request(command, serverPort);
+        return result;
+    }
+
+    public static String UDPwaitInQueue(String command,int serverPort) throws SocketException{
+        String result = "";
+        result = request(command, serverPort);
+        return result;
+    }
+
+    public static String UDPfindItem(String command,int serverPort) throws SocketException{
+        String result = "";
+        result = request(command, serverPort);
         return result;
 
     }
 
-    public static String UDPreturnItem(String command,int serverport) throws SocketException{
-        String result = " ";
-        result = request(command, serverport);
+    public static String UDPreturnItem(String command,int serverPort) throws SocketException{
+        String result = "";
+        result = request(command, serverPort);
         return result;
     }
 
+    public static String UDPlistBorrowedItem(String command,int serverPort) throws SocketException {
+        String result = "";
+        result = request(command,serverPort);
+        return result;
+    }
 }

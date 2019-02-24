@@ -80,7 +80,8 @@ public class UserClient {
                 System.out.println("1: BorrowItem");
                 System.out.println("2: FindItem");
                 System.out.println("3: ReturnItem");
-                System.out.println("4: Exit" + "\n");
+                System.out.println("4: ListBorrowedItem");
+                System.out.println("5: Exit" + "\n");
 
                 Scanner s = new Scanner(System.in);
                 int input = s.nextInt();
@@ -89,9 +90,10 @@ public class UserClient {
                         System.out.println("Enter The ItemID");
                         Scanner input1 = new Scanner(System.in);
                         String itemID = input1.nextLine();
-                        System.out.println("Enter The NumberOfDays");
-                        Scanner input2 = new Scanner(System.in);
-                        int days = input2.nextInt();
+//                        System.out.println("Enter The NumberOfDays");
+//                        Scanner input2 = new Scanner(System.in);
+//                        int days = input2.nextInt();
+                        int days = 1;
                         String itemCampus = itemID.substring(0,3);
                         String userAction = " User ["+ userID + "] borrow item ["+itemID+"] for ["+days+"] days ---> ";
                         String result = h.borrowItem(itemCampus, userID, itemID, days);
@@ -151,7 +153,11 @@ public class UserClient {
                         }
                         break;
                     case 4:
-                        System.exit(4);
+                        String listResult = h.listBorrowedItem(userID);
+                        System.out.println("All Borrowed Items : " + listResult);
+                        break;
+                    case 5:
+                        System.exit(5);
 
                     default:
                         break;

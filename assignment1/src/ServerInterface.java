@@ -21,4 +21,5 @@ public interface ServerInterface extends Remote {
     boolean managerLogin(String adminID) throws RemoteException;
     boolean userLogin(String studentID) throws RemoteException;
 
+    String listBorrowedItem(String userID) throws RemoteException;
 }
