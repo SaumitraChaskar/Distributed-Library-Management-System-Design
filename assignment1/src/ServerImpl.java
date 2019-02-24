@@ -2,6 +2,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.net.SocketException;
 import java.rmi.RemoteException;
+import java.rmi.server.RemoteRef;
 import java.rmi.server.UnicastRemoteObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,16 +12,13 @@ import java.util.HashMap;
 
 public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
 
-
     class Admin{
         String adminID = " ";
     }
-
     class User{
         String userID = " ";
         int borrowCount = 0;
     }
-
     class Item{
         String ID;
         String name;
@@ -35,7 +33,6 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
     ArrayList<Admin> adminClients = new ArrayList<>();
     ArrayList<User> userClients = new ArrayList<>();
 
-
     public ServerImpl() throws java.rmi.RemoteException{
         super();
     }
@@ -48,6 +45,11 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
         BufferedWriter bf = new BufferedWriter(fileWriter);
         bf.write(Message + "\n");
         bf.close();
+    }
+
+    @Override
+    public RemoteRef getRef() {
+        return super.getRef();
     }
 
     public String getFormatDate(){
@@ -128,7 +130,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
         return true;
     }
 
-    //admin's operations
+    //manager operations
     @Override
     public String addItem (String managerID, String itemID, String itemName, int quantity) throws RemoteException {
         String result = " ";
@@ -304,7 +306,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
     }
 
 
-    //user's operations
+    //user operations
     @Override
     public String borrowItem (String campusName, String userID, String itemID, int numberOfDays) throws RemoteException{
         String result = " ";
