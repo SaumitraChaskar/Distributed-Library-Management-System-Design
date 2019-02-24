@@ -1,0 +1,13 @@
+2019-02-20 12:52:36 MONU1111 log in successfully
+2019-02-20 12:53:36 MONU1111 log in successfully
+2019-02-20 13:08:27 MONU1111 log in successfully
+2019-02-20 13:12:22 MONU1111 log in successfully
+2019-02-23 22:42:38 MONU1111 log in successfully
+2019-02-23 22:43:11 MONU1111 log in successfully
+2019-02-23 22:43:17 User [MONU1111] borrow item [MON1111] for [1] days ---> Failed.
+2019-02-23 22:43:19 User [MONU1111] wait in queue for item [MON1111] ---> Success. Position In Queue :1
+2019-02-23 23:05:44 MONU1111 log in successfully
+2019-02-23 23:05:48 User [MONU1111] borrow item [MON1111] for [1] days ---> Failed.
+2019-02-23 23:05:50 User [MONU1111] wait in queue for item [MON1111] ---> Success. Position In Queue :1
+2019-02-23 23:11:10 MONU1111 log in successfully
+2019-02-23 23:11:15 User [MONU1111] borrow item [MON1111] for [1] days ---> Success.

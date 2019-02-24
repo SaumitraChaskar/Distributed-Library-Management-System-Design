@@ -1,0 +1,33 @@
+2019-02-20 11:57:20 CONM1111 log in successfully
+2019-02-20 11:57:23 Manager [CONM1111] list all items in server ---> Success. All Items:   , CON1111 a 1 , CON2222 b 2
+2019-02-20 12:00:31 Manager [CONM1111] add [1] of item [CON1111] [a] to server ---> Success
+2019-02-20 12:00:32 Manager [CONM1111] list all items in server ---> Success. All Items:   , CON1111 a 2 , CON2222 b 2
+2019-02-20 12:08:57 Manager [CONM1111] add [2] of item [CON2222] [b] to server ---> Success
+2019-02-20 12:08:59 Manager [CONM1111] list all items in server ---> Success. All Items:   , CON1111 a 2 , CON2222 b 4
+2019-02-20 12:09:31 Manager [CONM1111] remove [1] of item [CON1111] from server ---> Success
+2019-02-20 12:09:32 Manager [CONM1111] list all items in server ---> Success. All Items:   , CON1111 a 1 , CON2222 b 4
+2019-02-20 12:09:41 Manager [CONM1111] remove [-1] of item [CON2222] from server ---> Success
+2019-02-20 12:09:43 Manager [CONM1111] list all items in server ---> Success. All Items:   , CON1111 a 1
+2019-02-20 12:09:53 Manager [CONM1111] remove [1] of item [CON1111] from server ---> Success
+2019-02-20 12:09:54 Manager [CONM1111] list all items in server ---> Success. All Items:   , CON1111 a 0
+2019-02-20 12:12:32 Manager [CONM1111] list all items in server ---> Success. All Items:   , CON1111 a 0
+2019-02-20 12:12:43 Manager [CONM1111] add [1] of item [CON1111] [2] to server ---> Failed
+2019-02-20 12:12:49 Manager [CONM1111] add [1] of item [CON1111] [a] to server ---> Success
+2019-02-20 12:12:50 Manager [CONM1111] list all items in server ---> Success. All Items:   , CON1111 a 1
+2019-02-20 12:13:10 Manager [CONM1111] list all items in server ---> Success. All Items:   , CON1111 a 0
+2019-02-20 12:13:19 Manager [CONM1111] add [1] of item [CON1111] [a] to server ---> Success
+2019-02-20 12:13:20 Manager [CONM1111] list all items in server ---> Success. All Items:   , CON1111 a 0
+2019-02-20 12:14:04 Manager [CONM1111] list all items in server ---> Success. All Items:   , CON1111 a 0
+2019-02-20 12:14:21 Manager [CONM1111] add [2] of item [CON2222] [b] to server ---> Success
+2019-02-20 12:14:22 Manager [CONM1111] list all items in server ---> Success. All Items:   , CON1111 a 0 , CON2222 b 2
+2019-02-20 12:15:04 CONM1111 log in successfully
+2019-02-20 12:15:10 Manager [CONM1111] add [1] of item [CON3333] [c] to server ---> Success
+2019-02-20 12:30:27 CONM1111 log in successfully
+2019-02-20 12:30:32 Manager [CONM1111] add [1] of item [CON5555] [g] to server ---> Success
+2019-02-20 12:51:29 CONM1111 log in successfully
+2019-02-20 12:51:40 Manager [CONM1111] add [2] of item [CON6231] [Distributed] to server ---> Success
+2019-02-20 12:51:42 Manager [CONM1111] list all items in server ---> Success. All Items:   , CON1111 a 1 , CON2222 b 2 , CON6231 Distributed 2
+2019-02-20 12:51:54 Manager [CONM1111] add [1] of item [CON7654] [APP] to server ---> Success
+2019-02-20 12:51:55 Manager [CONM1111] list all items in server ---> Success. All Items:   , CON1111 a 1 , CON2222 b 2 , CON7654 APP 1 , CON6231 Distributed 2
+2019-02-20 13:26:48 CONM1111 log in successfully
+2019-02-20 13:26:50 Manager [CONM1111] list all items in server ---> Success. All Items:   , CON1111 a 1 , CON2222 b 2

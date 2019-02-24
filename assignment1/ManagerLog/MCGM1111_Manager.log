@@ -1,0 +1,13 @@
+2019-02-20 12:49:52 MCGM1111 log in successfully
+2019-02-20 12:50:13 Manager [MCGM1111] add [1] of item [MCG231] [1] to server ---> Success
+2019-02-20 12:50:30 Manager [MCGM1111] add [-1] of item [2] [MCG6231] to server ---> Failed
+2019-02-20 12:50:44 Manager [MCGM1111] add [1] of item [MCG231] [Distributed] to server ---> Failed
+2019-02-20 12:50:46 Manager [MCGM1111] list all items in server ---> Success. All Items:   , MCG1111 a 1 , MCG2222 b 2 , MCG231 1 1
+2019-02-20 12:50:58 MCGM1111 log in successfully
+2019-02-20 12:51:16 Manager [MCGM1111] add [1] of item [MCG6231] [Distributed] to server ---> Success
+2019-02-20 12:51:18 Manager [MCGM1111] list all items in server ---> Success. All Items:   , MCG1111 a 1 , MCG2222 b 2 , MCG231 1 1 , MCG6231 Distributed 1
+2019-02-20 12:52:08 Manager [MCGM1111] list all items in server ---> Success. All Items:   , MCG1111 a 1 , MCG2222 b 2 , MCG231 1 1 , MCG6231 Distributed 1
+2019-02-20 13:30:28 MCGM1111 log in successfully
+2019-02-20 13:30:34 Manager [MCGM1111] add [1] of item [MCG1111] [a] to server ---> Success
+2019-02-20 13:30:37 Manager [MCGM1111] list all items in server ---> Success. All Items:   , MCG1111 a 1
+2019-02-20 13:31:06 Manager [MCGM1111] list all items in server ---> Success. All Items:   , MCG1111 a 1
