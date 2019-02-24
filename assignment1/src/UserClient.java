@@ -104,13 +104,13 @@ public class UserClient {
                         String itemCampus = itemID.substring(0,3);
                         String userAction = " User ["+ userID + "] borrow item ["+itemID+"] for ["+days+"] days ---> ";
                         String result = h.borrowItem(itemCampus, userID, itemID, days);
-                        if(!result.equals(" ")){
+                        if(!result.isEmpty()){
                             System.out.println(userAction+"Success.");
                             Log(userID, getFormatDate() + userAction+"Success.");
                         }else{
                             System.out.println(userAction+"Failed.");
                             Log(userID, getFormatDate() + userAction+"Failed.");
-                            System.out.println("Do You Want To Wait In The Queue?(y/n)");
+                            System.out.println("Do You Want To Wait In The Queue?(Y/N)");
                             Scanner input5 = new Scanner(System.in);
                             String response = input5.nextLine();
                             String userAction2 = " User ["+ userID + "] wait in queue for item ["+itemID+"] ---> ";
@@ -134,8 +134,7 @@ public class UserClient {
 
                         String userAction3 = " User ["+ userID + "] find item ["+itemName+"] ---> ";
                         String findResult = h.findItem(userID,itemName);
-
-                        if(findResult.equals(" ")){
+                        if(findResult.isEmpty()){
                             System.out.println(userAction3+ "Failed ");
                             Log(userID, getFormatDate() + " " + userAction3+ "Failed ");
                         }
@@ -151,9 +150,9 @@ public class UserClient {
                         String returnCampus = returnItemID.substring(0,3);
                         String userAction4 = " User ["+ userID + "] return item ["+returnItemID+"] ---> ";
                         String returnResult = h.returnItem(returnCampus, userID, returnItemID);
-                        if(!returnResult.equals(" ")){
+                        if(!returnResult.isEmpty()){
                             System.out.println(userAction4+"Success");
-                            Log(userID, getFormatDate() + " " + userAction4 +" Success. "+ returnResult);
+                            Log(userID, getFormatDate() + " " + userAction4 +" Success. ");
                         }
                         else {
                             System.out.println(userAction4+"Failed ");

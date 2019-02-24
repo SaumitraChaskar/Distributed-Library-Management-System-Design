@@ -105,7 +105,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
         return true;
     }
 
-    public boolean studentLogin(String studentID) throws java.rmi.RemoteException{
+    public boolean studentLogin(String studentID) {
 
         Boolean exist = false;
 
@@ -132,51 +132,79 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
 
     //manager operations
     @Override
-    public String addItem (String managerID, String itemID, String itemName, int quantity) throws RemoteException {
-        String result = " ";
-        if(itemID.isEmpty() || itemName.isEmpty() || quantity==0){
-            return " ";
+    public String addItem (String managerID, String itemID, String itemName, int quantity) {
+        String result = "";
+        String error = "";
+        if(itemID.isEmpty() || itemName.isEmpty()){
+            return result;
         }
-        boolean added = false;
-        if(incertItem(managerID, itemID, itemName, quantity)){
-            added = true;
-            result = getFormatDate() + " Manager [" + managerID + "] add an item successfully. "
-                    + "ItemID: " + itemID + " " + "ItemName: " + itemName + " " + "ItemQuantity: " + quantity;
+
+        synchronized(this) {
+            if(quantity >= 0){
+                if (items.containsKey(itemID)){
+                    if(itemName.equals(items.get(itemID).name)) {
+                        items.get(itemID).num += quantity;
+                        result = "Manager increase quantity of item [" + itemID + "] by [" + quantity + "] success";
+                    }else{
+                        error = "Manager increase quantity of item [" + itemID + "] by [" + quantity + "] failed : " +
+                                "Wrong ItemName";
+                    }
+                }else {
+                    int flag = 0;
+                    for (HashMap.Entry<String, Item> entry : items.entrySet()) {
+                        if (entry.getValue().name.equals(itemName)) {
+                            error = "Manager add [" + quantity + "] of item [" + itemID + "] failed : " +
+                                    "ItemName already exist";
+                            flag = 1;
+                        }
+                    }
+                    if (flag == 0) {
+                        Item newItem = new Item();
+                        newItem.name = itemName;
+                        newItem.num = quantity;
+                        items.put(itemID, newItem);
+                        result = "Manager add [" + quantity + "] of item [" + itemID + "] success";
+                    }
+                }
+            }
+            else{
+                error = "Manager add [" + quantity + "] of item [" + itemID + "] failed : Qauntity must more than 0";
+            }
+        }
+
+        if(!result.isEmpty()){
+            System.out.println(result);
             try {
-                Log(Campus, result);
+                Log(Campus, getFormatDate() + result);
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             if(waitList.containsKey(itemID) && waitList.get(itemID).size() > 0) {
                 String lendResult = autoLend(itemID);
-                if (!lendResult.equals(" ")) {
+                if (!lendResult.isEmpty()) {
+                    String log = " Server auto lend item ["+itemID+"] " +
+                    "to user : " + lendResult+" after manager ["+managerID+"] add item. ";
                     try {
-                        System.out.println("Server auto lend item ["+itemID+"] to user ["+lendResult+"] " +
-                                "success after manager add item");
-                        Log(Campus, getFormatDate() + " Server auto lend item ["+itemID+"] " +
-                                "to user : " + lendResult+" after manager ["+managerID+"] add item. ");
+                        System.out.println(log);
+                        Log(Campus, getFormatDate() + log);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 } else {
+                    String log1 = " Server auto lend item ["+itemID+"] " +
+                            "to user failed after manager ["+managerID+"] add item. ";
                     try {
-                        System.out.println("Server auto lend item ["+itemID+"] to user ["+lendResult+"] " +
-                                "failed after manager add item");
-                        Log(Campus, getFormatDate() + " Server auto lend item ["+itemID+"] " +
-                                "to user failed after manager ["+managerID+"] add item. ");
+                        System.out.println(log1);
+                        Log(Campus, getFormatDate() + log1);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
-        }
-
-        if(!added){
-            String mess1 = getFormatDate() + " Manager [" + managerID + "] add an item failed. "
-                    + "ItemID: " + itemID + " " + "ItemName: " + itemName + " " + "ItemQuantity: " + quantity;
+        }else{
             try {
-                Log(Campus, mess1);
+                Log(Campus, getFormatDate() + error);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -184,94 +212,51 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
         return result;
     }
 
-    private boolean incertItem(String managerID, String itemID, String itemName, int quantity){
-        synchronized(this) {
-            if(quantity >= 0){
-                if (items.containsKey(itemID) && itemName.equals(items.get(itemID).name)){
-                    items.get(itemID).num += quantity;
-                    System.out.println("Manager increase quantity of an exist item Successfully");
-                    return true;
-                }else if(!items.containsKey(itemID)){
-                    for(HashMap.Entry<String, Item> entry : items.entrySet()){
-                        if(entry.getValue().name.equals(itemName)){
-                            return false;
-                        }
-                    }
-                    Item newItem = new Item();
-                    newItem.name = itemName;
-                    newItem.num = quantity;
-                    items.put(itemID, newItem);
-                    System.out.println("Manager add a new item Successfully");
-                    return true;
-                }else{
-                    return false;
-                }
-            }
-            else{
-                System.out.println("Manager add an item failed");
-                return false;
-            }
-        }
-    }
-
     @Override
-    public String removeItem (String managerID, String itemID, int quantity) throws RemoteException {
-        String result = " ";
-        boolean remove = false;
+    public String removeItem (String managerID, String itemID, int quantity) {
+        String result = "";
+        String error = "";
         synchronized(this) {
             if(items.containsKey(itemID)){
-                if(items.get(itemID).num >= 0){
+                if(items.get(itemID).num > 0){
                     if(quantity < 0 ){
                         //remove all
                         items.remove(itemID);
+                        result = " Manager [" + managerID + "] delete item [" + itemID + "] success. ";
                         if(waitList.containsKey(itemID)){
                             waitList.remove(itemID);
+                            result += "Delete this item from wait list. ";
                         }if(borrowedItems.containsKey(itemID)){
                             borrowedItems.remove(itemID);
+                            result += "Delete this item from borrowed list ";
                         }
-                        remove = true;
-                        String mess = getFormatDate() + " Manager [" + managerID + "] remove all of " +
-                                "item [" + itemID + "] successfully. ";
-                        items.remove(itemID);
-                        if(borrowedItems.containsKey(itemID)){
-                            mess += "Remove this item from borrowed list";
-                            borrowedItems.remove(itemID);
-                        }
-                        try {
-                            Log(Campus, mess);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
                     }else if(quantity <= items.get(itemID).num) {
                         items.get(itemID).num -= quantity;
-                        remove =true;
-                        String mess1 = getFormatDate() + " Manager [" + managerID + "] remove ["
-                                + quantity + "] of item [" + itemID + "] successfully. ";
-                        if(borrowedItems.containsKey(itemID)){
-                            mess1 += "Remove this item from borrowed list";
-                        }
-                        try {
-                            Log(Campus, mess1);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        result = " Manager [" + managerID + "] remove ["
+                                + quantity + "] of item [" + itemID + "] success.";
                     }else{
-                        result = result + "No Enough Item To Remove";
+                        error = "No Enough Item To Remove";
                     }
                 }else{
-                    result = result + "No Item Available";
+                    error = "No Item Available At This Moment";
                 }
             }else{
-                result = result + "Item Not Found!";
+                error = "Item Not Found! ";
             }
         }
-        if(!remove){
-            String mess2 = getFormatDate() + " Manager [" + managerID + "] remove ["
-                    + quantity + "] of item [" + itemID + "] failed: ";
-            mess2 += result;
+        if(!result.isEmpty()) {
             try {
-                Log(Campus, mess2);
+                Log(Campus, getFormatDate() + result);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else{
+            String log = " Manager [" + managerID + "] remove ["
+                    + quantity + "] of item [" + itemID + "] failed: ";
+            log += error;
+            try {
+                Log(Campus, getFormatDate() +log);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -280,24 +265,25 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
     }
 
     @Override
-    public String listItemAvailability (String managerID) throws RemoteException{
-        String result = " ";
+    public String listItemAvailability (String managerID) {
+        String result = "";
         for(HashMap.Entry<String, Item> entry : items.entrySet()){
-            result = result + " , " + entry.getKey() + " " + entry.getValue().name + " " + entry.getValue().num;
+            result = result + entry.getKey() + " " + entry.getValue().name + " " + entry.getValue().num + " , ";
         }
-        if(result.equals(" ")){
-            System.out.println(" Manager " + managerID + " list all of item failed");
+        if(result.isEmpty()){
+            String log = " Manager " + managerID + " list all of item failed";
+            System.out.println(log);
             try {
-                Log(Campus, getFormatDate() + " Manager " + managerID + " list all of item failed");
+                Log(Campus, getFormatDate() + log);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }else{
-            System.out.println(" Manager " + managerID + " list all of item successfully. "
-                    + "All Items: " + result);
+            String log1 = " Manager " + managerID + " list all of item success. "
+                    + "All Items: " + result;
+            System.out.println(log1);
             try {
-                Log(Campus, getFormatDate() + " Manager " + managerID + " list all of item successfully. "
-                        + "All Items: " + result);
+                Log(Campus, getFormatDate() + log1);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -308,8 +294,8 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
 
     //user operations
     @Override
-    public String borrowItem (String campusName, String userID, String itemID, int numberOfDays) throws RemoteException{
-        String result = " ";
+    public String borrowItem (String campusName, String userID, String itemID, int numberOfDays) {
+        String result = "";
         String command = "borrowItem(" + userID + "," + itemID + "," + numberOfDays + ")";
 
         for(int i = 0; i < userClients.size();i ++) {
@@ -332,8 +318,8 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
                 }
 
                 if(!campusName.equals(Campus)) {
-                    if (result.equals(" ")) {
-                        String log = " Server borrow item ["+itemID+"] for user ["+userID+"] from ["+campusName+"] >> failed <<";
+                    if (result.isEmpty()) {
+                        String log = " Server borrow item ["+itemID+"] for user ["+userID+"] from server ["+campusName+"] failed";
                         System.out.println(log);
                         try {
                             Log(Campus, getFormatDate() + log);
@@ -341,7 +327,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
                             e.printStackTrace();
                         }
                     } else {
-                        String log2 = " Server borrow item ["+itemID+"] for user ["+userID+"] from ["+campusName+"] >> success <<";
+                        String log2 = " Server borrow item ["+itemID+"] for user ["+userID+"] from server ["+campusName+"] success";
                         System.out.println(log2);
                         try {
                             Log(Campus, getFormatDate() + log2);
@@ -357,35 +343,35 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
     }
 
     public String borrowLocal(String userID, String itemID){
-        String result = " ";
+        String result = "";
+        int flag = 0;
         String userCampus = userID.substring(0,3);
         synchronized (this){
             if(!userCampus.equals(Campus)){
                 for(HashMap.Entry<String, ArrayList<String>> entry : borrowedItems.entrySet()){
                     if(entry.getValue().contains(userID)){
-                        break;
+                        flag = 1;
                     }
                 }
             }
-            if (items.get(itemID).num > 0) {
-                if(!borrowedItems.containsKey(itemID)){
-                    ArrayList<String> newBorrowedUser = new ArrayList<>();
-                    newBorrowedUser.add(userID);
-                    borrowedItems.put(itemID,newBorrowedUser);
-                    items.get(itemID).num--;
-                }else{
-                    if(!borrowedItems.get(itemID).contains(userID)) {
-                        borrowedItems.get(itemID).add(userID);
+            if(flag == 0) {
+                if (items.get(itemID).num > 0) {
+                    if (!borrowedItems.containsKey(itemID)) {
+                        ArrayList<String> newBorrowedUser = new ArrayList<>();
+                        newBorrowedUser.add(userID);
+                        borrowedItems.put(itemID, newBorrowedUser);
                         items.get(itemID).num--;
+                    } else {
+                        if (!borrowedItems.get(itemID).contains(userID)) {
+                            borrowedItems.get(itemID).add(userID);
+                            items.get(itemID).num--;
+                        }
                     }
+                    result = itemID;
                 }
-                result = itemID;
-
-
             }
-
-            if (result.equals(" ")) {
-                String log = " User [" + userID + "] borrow item ["+itemID+"] >> failed <<";
+            if (result.isEmpty()) {
+                String log = " User [" + userID + "] borrow item ["+itemID+"] failed.";
                 System.out.println(log);
                 try {
                     Log(Campus, getFormatDate() + log);
@@ -393,7 +379,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
                     e.printStackTrace();
                 }
             } else {
-                String log2 = " User [" + userID + "] borrow item ["+itemID+"] >> success <<";
+                String log2 = " User [" + userID + "] borrow item ["+itemID+"] success.";
                 System.out.println(log2);
                 try {
                     Log(Campus, getFormatDate() + log2);
@@ -404,6 +390,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
         }
         return result;
     }
+
 
     @Override
     public String waitInQueue(String campusName, String userID, String itemID) {
@@ -427,16 +414,9 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-                if (result.equals(" ")) {
-                    return " ";
-                } else {
-                    return result;
-                }
-
             }
         }
-        return " ";
+        return result;
     }
 
     public String waitInLocal(String userID, String itemID){
@@ -456,19 +436,19 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
             }
 
             if (result.equals(" ")) {
-                String mess = " Server add user [" + userID + "] in wait queue of item ["+itemID+ "] failed.";
-                System.out.println(mess);
+                String log = " Server add user [" + userID + "] in wait queue of item ["+itemID+ "] failed.";
+                System.out.println(log);
                 try {
-                    Log(Campus, getFormatDate() + mess);
+                    Log(Campus, getFormatDate() + log);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else {
-                String mess1 = " Server add user [" + userID + "] in wait queue of " +
+                String log1 = " Server add user [" + userID + "] in wait queue of " +
                         "item ["+itemID+ "] at position [" +result+"] success.";
-                System.out.println(mess1);
+                System.out.println(log1);
                 try {
-                    Log(Campus, getFormatDate() + mess1);
+                    Log(Campus, getFormatDate() + log1);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -480,8 +460,8 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
 
 
     @Override
-    public String findItem (String userID, String itemName) throws RemoteException {
-        String result = " ";
+    public String findItem (String userID, String itemName) {
+        String result = "";
         result = findItemLocal(itemName);
         String command = "findItem(" + itemName + ")";
 
@@ -507,18 +487,18 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
         } catch (SocketException e1) {
             e1.printStackTrace();
         }
-        if(!result.equals(" ")) {
-            String log =" User [" + userID + "] found all item named ["+itemName +"] successfully . Items: "+result;
+        if(!result.isEmpty()) {
+            String log =" User [" + userID + "] found all item named ["+itemName +"] success . Items: "+result;
+            System.out.println(log);
             try {
-                System.out.println(log);
                 Log(Campus, getFormatDate() + log );
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }else{
             String log1 =" User [" + userID + "] found all item named ["+itemName +"] failed. ";
+            System.out.println(log1);
             try {
-                System.out.println(log1);
                 Log(Campus, getFormatDate() + log1);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -528,27 +508,27 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
     }
 
     public String findItemLocal(String itemName){
-        String result = " ";
-        int availablenum = 0;
-        String itemID = " ";
+        String result = "";
+        int availableNum = 0;
+        String itemID = "";
         synchronized(this) {
             for(HashMap.Entry<String,Item> entry : items.entrySet()){
                 if(entry.getValue().name.equals(itemName)){
-                    availablenum = availablenum + entry.getValue().num;
+                    availableNum += entry.getValue().num;
                     itemID = entry.getKey();
-                    result = itemID + " " + Integer.toString(availablenum);
+                    result = itemID + " " + Integer.toString(availableNum);
                 }
             }
         }
-
         return result;
     }
 
+
     @Override
-    public String returnItem(String campusName, String userID, String itemID) throws RemoteException {
-        String result = " ";
+    public String returnItem(String campusName, String userID, String itemID) {
+        String result = "";
         String command = "returnItem(" + itemID + "," + userID + ")";
-        int serverport;
+        int serverPort;
 
         try {
             if(campusName.equals(Campus)){
@@ -556,18 +536,18 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
 
             }
             else if(campusName.equals("CON")){
-                serverport = 2234;
-                result = UDPRequest.UDPreturnItem(command,serverport);
+                serverPort = 2234;
+                result = UDPRequest.UDPreturnItem(command,serverPort);
 
             }
             else if(campusName.equals("MCG")){
-                serverport = 2235;
-                result = UDPRequest.UDPreturnItem(command,serverport);
+                serverPort = 2235;
+                result = UDPRequest.UDPreturnItem(command,serverPort);
 
             }
             else if(campusName.equals("MON")){
-                serverport = 2236;
-                result = UDPRequest.UDPreturnItem(command,serverport);
+                serverPort = 2236;
+                result = UDPRequest.UDPreturnItem(command,serverPort);
 
             }
 
@@ -576,22 +556,22 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
         }
 
         if(!campusName.equals(Campus)) {
-            if (!result.equals(" ")) {
-                String mess = " Server return item [" + itemID + "] for user [" + userID + "] to ["
+            if (!result.isEmpty()) {
+                String log = " Server return item [" + itemID + "] for user [" + userID + "] to server ["
                         + campusName + "] success";
+                System.out.println(log);
                 try {
-                    System.out.println(mess);
-                    Log(Campus, getFormatDate() + mess);
+                    Log(Campus, getFormatDate() + log);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
             } else {
-                String mess1 = " Server return item [" + itemID + "] for user [" + userID + "] to ["
+                String log1 = " Server return item [" + itemID + "] for user [" + userID + "] to server ["
                         + campusName + "] failed";
+                System.out.println(log1);
                 try {
-                    System.out.println(mess1);
-                    Log(Campus, getFormatDate() + mess1);
+                    Log(Campus, getFormatDate() + log1);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -600,51 +580,54 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
         return result;
     }
 
-    public String returnLocal(String itemID,String userID) throws RemoteException {
-        String result = " ";
+    public String returnLocal(String itemID,String userID) {
+        String result = "";
         synchronized (this) {
             if (borrowedItems.containsKey(itemID)) {
                 if (borrowedItems.get(itemID).contains(userID)) {
                     borrowedItems.get(itemID).remove(userID);
                     items.get(itemID).num++;
                     result = itemID;
+                    String log = " User [" + userID + "] return item [" + itemID + "] success.";
+                    System.out.println(log);
                     try {
-                        String mess = " User [" + userID + "] return item [" + itemID + "] success.";
-                        System.out.println(mess);
-                        Log(Campus, getFormatDate() + mess);
+                        Log(Campus, getFormatDate() + log);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     if(waitList.containsKey(itemID) && waitList.get(itemID).size() > 0) {
                         String lendResult = autoLend(itemID);
-                        if (!lendResult.equals(" ")) {
+                        if (!lendResult.isEmpty()) {
+                            String log2 = " Server auto lend item ["+itemID+"] " +
+                                    "to user : " + lendResult+" after user ["+userID+"] return.";
+                            System.out.println(log2);
                             try {
-                                System.out.println("Server auto lend item ["+itemID+"] Successfully");
-                                Log(Campus, getFormatDate() + " Server auto lend item ["+itemID+"] " +
-                                        "to user : " + lendResult+" after user ["+userID+"] return. ");
+                                Log(Campus, getFormatDate() + log2);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
+                            result = log2;
                         } else {
+                            String log3 = " Server auto lend item ["
+                                    +itemID+"] failed after user ["+userID+"] return.";
                             try {
-                                System.out.println("Server auto lend item ["+itemID+"] Failed");
-                                Log(Campus, getFormatDate() + " Server auto lend item ["
-                                        +itemID+"] failed after user ["+userID+"] return. ");
+                                System.out.println(log3);
+                                Log(Campus, getFormatDate() + log3);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
+                            result = log3;
                         }
                     }
 
                 }
             }
         }
-
-        if(result.equals(" ")){
-            String mess1 = " User [" + userID + "] return item [" + itemID + "] failed.";
+        if (result.isEmpty()){
+            String log1 = " User [" + userID + "] return item [" + itemID + "] failed.";
+            System.out.println(log1);
             try {
-                System.out.println(mess1);
-                Log(Campus, getFormatDate() + mess1);
+                Log(Campus, getFormatDate() + log1);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -653,24 +636,25 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
     }
 
 
-    public String autoLend (String itemID) throws RemoteException {
-        String result =" ";
+    public String autoLend (String itemID) {
+        String result = "";
+        String users = "";
         if (waitList.containsKey(itemID) && waitList.get(itemID).size() > 0 ) {
             int left = items.get(itemID).num;
             int pointer = 0;
             while(left > 0 && waitList.get(itemID).size() > 0 && pointer < waitList.get(itemID).size() ) {
                 String waitUser = waitList.get(itemID).get(pointer);
                 result = borrowLocal(waitUser, itemID);
-                if(!result.equals(" ")){
+                if(!result.isEmpty()){
                     waitList.get(itemID).remove(waitUser);
-                    result += waitUser+",";
+                    users += waitUser+",";
                 }else{
                     pointer ++;
                 }
                 left = items.get(itemID).num;
             }
         }
-        return result;
+        return users;
     }
 
 }

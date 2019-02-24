@@ -83,7 +83,7 @@ public class ManagerClient {
                 int input = s.nextInt();
                 switch (input) {
                     case 1:
-                        System.out.println("Enter ItemID");
+                        System.out.println("Enter Add ItemID");
                         Scanner input1 = new Scanner(System.in);
                         String itemID = input1.nextLine();
                         System.out.println("Enter ItemName");
@@ -95,7 +95,7 @@ public class ManagerClient {
                         String addAction = " Manager ["+managerID+"] add ["+quantity+"] " +
                                 "of item ["+itemID+"] ["+itemName+"] to server ---> ";
                         String addResult = h.addItem(managerID, itemID, itemName,quantity);
-                        if(!addResult.equals(" ")) {
+                        if(!addResult.isEmpty()) {
                             System.out.println(addAction+"Success");
                             Log(managerID, getFormatDate()+addAction+"Success");
                             break;
@@ -107,7 +107,7 @@ public class ManagerClient {
                         }
 
                     case 2:
-                        System.out.println("Enter ItemID");
+                        System.out.println("Enter Remove ItemID");
                         Scanner input4 = new Scanner(System.in);
                         String removeItemID = input4.nextLine();
                         System.out.println("Enter ItemQuantity(Remove all if Quantity < 0)");
@@ -116,19 +116,19 @@ public class ManagerClient {
                         String addAction2 = " Manager ["+managerID+"] remove ["+removeQuantity+"] " +
                                 "of item ["+removeItemID+"] from server ---> ";
                         String removeResult = h.removeItem(managerID, removeItemID, removeQuantity);
-                        if(removeResult.equals(" ")){
+                        if(removeResult.isEmpty()){
                             System.out.println(addAction2+"Success");
                             Log(managerID, getFormatDate()+addAction2+"Success");
                         }
                         else{
-                            System.out.println(addAction2+"Failed :"+removeResult);
-                            Log(managerID, getFormatDate() + addAction2+"Failed :"+removeResult);
+                            System.out.println(addAction2+"Failed");
+                            Log(managerID, getFormatDate() + addAction2+"Failed");
                         }
                         break;
                     case 3:
                         String addAction3 = " Manager ["+managerID+"] list all items in server ---> ";
                         String result = h.listItemAvailability(managerID);
-                        if(!result.equals(" ")){
+                        if(!result.isEmpty()){
                             System.out.println(addAction3+"Success. All Items: "+result);
                             Log(managerID, getFormatDate() + addAction3+"Success. All Items: "+result);
                         }
