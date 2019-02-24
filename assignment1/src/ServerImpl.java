@@ -344,6 +344,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
 
     public String borrowLocal(String userID, String itemID){
         String result = "";
+        String failReason = "";
         int flag = 0;
         String userCampus = userID.substring(0,3);
         synchronized (this){
@@ -351,6 +352,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
                 for(HashMap.Entry<String, ArrayList<String>> entry : borrowedItems.entrySet()){
                     if(entry.getValue().contains(userID)){
                         flag = 1;
+                        failReason = "User can only borrow 1 item from other libraries";
                     }
                 }
             }
@@ -368,13 +370,15 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
                         }
                     }
                     result = itemID;
+                }else{
+                    failReason = "No item left";
                 }
             }
             if (result.isEmpty()) {
-                String log = " User [" + userID + "] borrow item ["+itemID+"] failed.";
+                String log = " User [" + userID + "] borrow item ["+itemID+"] failed: ";
                 System.out.println(log);
                 try {
-                    Log(Campus, getFormatDate() + log);
+                    Log(Campus, getFormatDate() + log +failReason);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
