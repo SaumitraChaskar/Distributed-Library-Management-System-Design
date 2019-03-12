@@ -43,14 +43,13 @@ public class RequestExecution extends Thread{
             result = UDPwaitInQueue(message);
         }
         else if(message.startsWith("returnItem")){
-            try {
-                result = UDPreturnItem(message);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+            result = UDPreturnItem(message);
         }
         else if(message.startsWith("listBorrowedItem")){
             result = UDPlistBorrowedItem(message);
+        }
+        else if (message.startsWith("exchangeItem")){
+            result = UDPexchangeItem(message);
         }
         byte []buffer = result.getBytes();
         DatagramPacket reply = new DatagramPacket(buffer, buffer.length,address,clientport);
@@ -87,7 +86,7 @@ public class RequestExecution extends Thread{
 
     }
 
-    public String UDPreturnItem(String message) throws RemoteException {
+    public String UDPreturnItem(String message) {
         String arguments = message.substring(message.indexOf("(") + 1,message.length() - 1);
         String arg[] = arguments.split(",");
         String itemID = arg[0];
@@ -102,4 +101,13 @@ public class RequestExecution extends Thread{
         return result;
     }
 
+    private String UDPexchangeItem(String message) {
+        String arguments = message.substring(message.indexOf("(") + 1,message.length() - 1);
+        String arg[] = arguments.split(",");
+        String studentID = arg[0];
+        String newItemID = arg[1];
+        String oldItemID = arg[2];
+        String result = server.exchangeLocal(studentID,newItemID,oldItemID);
+        return result;
+    }
 }

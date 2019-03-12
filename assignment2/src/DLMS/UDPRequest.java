@@ -73,4 +73,10 @@ public class UDPRequest {
         result = request(command,serverPort);
         return result;
     }
+
+    public static String UDPexchangeItem(String command, int serverPort) throws SocketException {
+        String result = "";
+        result = request(command,serverPort);
+        return result;
+    }
 }

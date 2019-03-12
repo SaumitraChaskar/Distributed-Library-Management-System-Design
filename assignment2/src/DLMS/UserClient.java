@@ -59,15 +59,15 @@ public class UserClient {
             }
 
             while(true){
-                System.out.println("=============================");
-                System.out.println("Please Select An Operation: ");
-                System.out.println("1: BorrowItem");
-                System.out.println("2: FindItem");
-                System.out.println("3: ReturnItem");
-                System.out.println("4: ListBorrowedItem");
-                System.out.println("5: ExchangeItem");
-                System.out.println("6: Exit" + "\n");
-                System.out.println("=============================");
+                System.out.println("++++++++++++++++++++++++++++++");
+                System.out.println("|Please Select An Operation: |");
+                System.out.println("|1: BorrowItem               |");
+                System.out.println("|2: FindItem                 |");
+                System.out.println("|3: ReturnItem               |");
+                System.out.println("|4: ListBorrowedItem         |");
+                System.out.println("|5: ExchangeItem             |");
+                System.out.println("|6: Exit                     |");
+                System.out.println("++++++++++++++++++++++++++++++");
 
                 Scanner s = new Scanner(System.in);
                 int input = s.nextInt();
@@ -86,6 +86,7 @@ public class UserClient {
                         break;
                     case 5:
                         exchangeItem(userID);
+                        break;
                     case 6:
                         System.exit(6);
                     default:

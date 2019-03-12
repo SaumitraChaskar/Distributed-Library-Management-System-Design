@@ -60,12 +60,13 @@ public class ManagerClient {
             }
 
             while(true){
-                System.out.println(" ");
-                System.out.println("Please Select An Operation: ");
-                System.out.println("1: AddItem");
-                System.out.println("2: RemoveItem");
-                System.out.println("3: ListAllAvailability");
-                System.out.println("4: Exit" + "\n");
+                System.out.println("++++++++++++++++++++++++++++++");
+                System.out.println("|Please Select An Operation: |");
+                System.out.println("|1: AddItem                  |");
+                System.out.println("|2: RemoveItem               |");
+                System.out.println("|3: ListAllAvailability      |");
+                System.out.println("|4: Exit                     |");
+                System.out.println("++++++++++++++++++++++++++++++");
 
                 Scanner s = new Scanner(System.in);
                 int input = s.nextInt();

@@ -684,16 +684,60 @@ public class ServerImp extends CORBAInterfacePOA {
         String result = "";
         String newCampus = newItemID.substring(0,3);
         String oldCampus = oldItemID.substring(0,3);
+        String command = "exchangeItem(" + studentID + "," + newItemID + "," + oldItemID + ")";
+        int serverPort;
+
+        if(newCampus.equals(oldCampus)){
+            try {
+                if(newCampus.equals(Campus)){
+                    result = exchangeLocal(studentID,newItemID,oldItemID);
+                }
+                else if(newCampus.equals("CON")){
+                    serverPort = 2234;
+                    result = UDPRequest.UDPexchangeItem(command,serverPort);
+                }
+                else if(newCampus.equals("MCG")){
+                    serverPort = 2235;
+                    result = UDPRequest.UDPexchangeItem(command,serverPort);
+                }
+                else if(newCampus.equals("MON")){
+                    serverPort = 2236;
+                    result = UDPRequest.UDPexchangeItem(command,serverPort);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else{
+            try {
+                lock.lock();
+                String borrowResult = borrowItem(newCampus, studentID, newItemID, Integer.toString(1));
+                if (!borrowResult.isEmpty()) {
+                    returnItem(oldCampus, studentID, oldItemID);
+                    result = borrowResult;
+                }
+            }finally {
+                lock.unlock();
+            }
+        }
+        return result;
+    }
+
+    public String exchangeLocal(String studentID, String newItemID, String oldItemID) {
+        String result = "";
         if(borrowedItems.containsKey(oldItemID) && borrowedItems.get(oldItemID).contains(studentID)){
             try{
                 lock.lock();
-                String borrowResult = borrowItem(newCampus,studentID,newItemID,Integer.toString(1));
-                if(!borrowResult.isEmpty()){
-                    returnItem(oldCampus,studentID,oldItemID);
-                    result = borrowResult;
+                borrowedItems.get(oldItemID).remove(studentID);
+                String borrowResult = borrowLocal(studentID,newItemID);
+                borrowedItems.get(oldItemID).add(studentID);
 
-                    String log = " User [" + studentID + "] exchange with item ["+oldItemID+"] for item [" +
+                if(!borrowResult.isEmpty()) {
+                    returnLocal(oldItemID, studentID);
+                    result = borrowResult;
+                    String log = " User [" + studentID + "] exchange with item [" + oldItemID + "] for item [" +
                             newItemID + "] success.";
+                    System.out.println(log);
                     try {
                         Log(Campus, getFormatDate() + log);
                     } catch (Exception e) {
