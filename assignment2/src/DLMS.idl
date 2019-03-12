@@ -1,0 +1,26 @@
+module DLMS {
+	interface CORBAInterface {
+
+        string addItem (in string managerID, in string itemID, in string itemName, in string quantity);
+
+        string removeItem (in string managerID, in string itemID, in string quantity);
+
+        string listItemAvailability (in string managerID);
+
+        string borrowItem (in string campusName, in string userID, in string itemID, in string numberOfDays);
+
+        string findItem (in string userID, in string itemName);
+
+        string returnItem(in string campusName, in string userID, in string itemID);
+
+        string waitInQueue(in string campusName, in string userID, in string itemID);
+
+        boolean managerLogin(in string adminID);
+        boolean userLogin(in string studentID);
+
+        string listBorrowedItem(in string userID);
+
+        string exchangeItem (in string studentID, in string newItemID, in string oldItemID);
+	};
+	
+};
