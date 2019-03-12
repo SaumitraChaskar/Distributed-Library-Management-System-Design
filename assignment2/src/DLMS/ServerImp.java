@@ -136,16 +136,16 @@ public class ServerImp extends CORBAInterfacePOA {
                 if (items.containsKey(itemID)){
                     if(itemName.equals(items.get(itemID).name)) {
                         items.get(itemID).num += intQuantity;
-                        result = "Manager increase quantity of item [" + itemID + "] by [" + quantity + "] success";
+                        result = "Manager ["+managerID+"] increase quantity of item [" + itemID + "] by [" + quantity + "] success";
                     }else{
-                        error = "Manager increase quantity of item [" + itemID + "] by [" + quantity + "] failed : " +
+                        error = "Manager ["+managerID+"] increase quantity of item [" + itemID + "] by [" + quantity + "] failed : " +
                                 "Wrong ItemName";
                     }
                 }else {
                     int flag = 0;
                     for (HashMap.Entry<String, Item> entry : items.entrySet()) {
                         if (entry.getValue().name.equals(itemName)) {
-                            error = "Manager add [" + quantity + "] of item [" + itemID + "] failed : " +
+                            error = "Manager ["+managerID+"] add [" + quantity + "] of item [" + itemID + "] failed : " +
                                     "ItemName already exist";
                             flag = 1;
                         }
@@ -155,12 +155,12 @@ public class ServerImp extends CORBAInterfacePOA {
                         newItem.name = itemName;
                         newItem.num = intQuantity;
                         items.put(itemID, newItem);
-                        result = "Manager add [" + quantity + "] of item [" + itemID + "] success";
+                        result = "Manager ["+managerID+"] add [" + quantity + "] of item [" + itemID + "] success";
                     }
                 }
             }
             else{
-                error = "Manager add [" + quantity + "] of item [" + itemID + "] failed : Qauntity must more than 0";
+                error = "Manager ["+managerID+"] add [" + quantity + "] of item [" + itemID + "] failed : Qauntity must more than 0";
             }
         }
 
@@ -255,7 +255,6 @@ public class ServerImp extends CORBAInterfacePOA {
         }
         return result;
     }
-
     @Override
     public String listItemAvailability (String managerID) {
         String result = "";
@@ -263,7 +262,7 @@ public class ServerImp extends CORBAInterfacePOA {
             result = result + entry.getKey() + " " + entry.getValue().name + " " + entry.getValue().num + " , ";
         }
         if(result.isEmpty()){
-            String log = " Manager " + managerID + " list all of item failed";
+            String log = " Manager [" + managerID + "] list all of item failed";
             System.out.println(log);
             try {
                 Log(Campus, getFormatDate() + log);
@@ -271,7 +270,7 @@ public class ServerImp extends CORBAInterfacePOA {
                 e.printStackTrace();
             }
         }else{
-            String log1 = " Manager " + managerID + " list all of item success. "
+            String log1 = " Manager [" + managerID + "] list all of item success. "
                     + "All Items: " + result;
             System.out.println(log1);
             try {
@@ -413,7 +412,6 @@ public class ServerImp extends CORBAInterfacePOA {
         }
         return result;
     }
-
     public String waitInLocal(String userID, String itemID){
         String result = " ";
         synchronized (this) {
@@ -506,7 +504,6 @@ public class ServerImp extends CORBAInterfacePOA {
         }
         return result;
     }
-
     public String findItemLocal(String itemName){
         String result = "";
         int availableNum = 0;
@@ -579,7 +576,6 @@ public class ServerImp extends CORBAInterfacePOA {
         }
         return result;
     }
-
     public String returnLocal(String itemID,String userID) {
         String result = "";
         synchronized (this) {
@@ -667,7 +663,6 @@ public class ServerImp extends CORBAInterfacePOA {
 
         return result;
     }
-
     public String listBorrowedLocal(String userID){
         String result = "";
         for(HashMap.Entry<String,ArrayList<String>> entry : borrowedItems.entrySet()){
@@ -722,7 +717,6 @@ public class ServerImp extends CORBAInterfacePOA {
         }
         return result;
     }
-
     public String exchangeLocal(String studentID, String newItemID, String oldItemID) {
         String result = "";
         if(borrowedItems.containsKey(oldItemID) && borrowedItems.get(oldItemID).contains(studentID)){

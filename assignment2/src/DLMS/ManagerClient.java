@@ -52,11 +52,11 @@ public class ManagerClient {
 
             if(ServerImp.managerLogin(managerID)){
                 System.out.println("Log in successfully");
-                Log(managerID, getFormatDate() + " " + managerID + " log in successfully");
+                Log(managerID, getFormatDate() + " Manager [" + managerID + "] log in successfully");
             }
             else{
                 System.out.println("Log in failed");
-                Log(managerID, getFormatDate() + " " + managerID + " log in failed");
+                Log(managerID, getFormatDate() + " Manager [" + managerID + "] log in failed");
             }
 
             while(true){

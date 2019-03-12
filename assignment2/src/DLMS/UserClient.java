@@ -183,7 +183,7 @@ public class UserClient {
         System.out.println("Enter newItemID:");
         String newItemID = input.nextLine();
 
-        String userAction = " User ["+ userID +"] exchange with item ["+oldItemID+"] for item ["
+        String userAction = "User ["+ userID +"] exchange with item ["+oldItemID+"] for item ["
                 +newItemID+"] ---> ";
         String exchangeResult = ServerImp.exchangeItem(userID, newItemID, oldItemID);
 
