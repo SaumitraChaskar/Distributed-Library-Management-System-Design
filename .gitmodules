@@ -1,0 +1,3 @@
+[submodule "src/project/dlms-project"]
+	path = src/project/dlms-project
+	url = git@github.com:Hasib-rafi1/dlms-project.git
