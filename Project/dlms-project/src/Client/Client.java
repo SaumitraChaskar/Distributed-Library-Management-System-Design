@@ -165,12 +165,7 @@ public class Client {
 			System.out.println("Item List is given below. ");
 			System.out.println(obj.listItemAvailability(username));
 			System.out.println("To GO back press E and enter");
-			String exit = scanner.nextLine();
-			if(exit.equals("E") || exit.equals("e")) {
-				manager(username,ncRef);
-			}else {
-				manager(username,ncRef);
-			}
+			manager(username,ncRef);
 		}
 		else if (menuSelection.equals("4")) {
 			startSystem(ncRef);

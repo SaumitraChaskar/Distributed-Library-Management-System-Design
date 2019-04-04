@@ -2,13 +2,11 @@ package ReplicaManagerThree;
 
 import ReplicaManagerOne.Map.Message;
 import ReplicaManagerOne.Map.MessageComparator;
-import ReplicaManagerOne.Server.ConcordiaServer;
-import ReplicaManagerOne.Server.McgillServer;
-import ReplicaManagerOne.Server.MontrealServer;
 import Utils.PortsAndIPs;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 
@@ -17,24 +15,29 @@ import static java.lang.Thread.sleep;
 public class RmThree {
 	private static int nextSequence = 1;
 	private static PriorityQueue<Message> pq = new PriorityQueue<Message>(20, new MessageComparator());
-
-	private static boolean testMode = false;
-	private static String testServer = "";
-    private static boolean recovering = false;
     private static final String rmName = "3";
+
+    private static boolean testMode = false;
+    private static String testServer = "";
+    private static boolean recovering = false;
 	private static int consecutiveError = 0;
+    private static ArrayList<String> history = new ArrayList<>();
+
+    private static Thread conServer;
+    private static Thread mcgServer;
+    private static Thread monServer;
 	public static void main(String[] args) {
 		
 		Runnable task = () -> {
 			receive();
 		};
-		Thread thread = new Thread(task);
-		thread.start();
+        Thread thread = new Thread(task);
+        thread.start();
 		Runnable task2 = () ->{
 		    receiveFeedback();
         };
-		Thread thread1 = new Thread(task2);
-		thread1.start();
+        Thread thread1 = new Thread(task2);
+        thread1.start();
 
         Runnable task3 = () ->{
             try {
@@ -43,7 +46,7 @@ public class RmThree {
                 e.printStackTrace();
             }
         };
-        Thread conServer = new Thread(task3);
+        conServer = new Thread(task3);
         conServer.start();
 
         Runnable task4 = () ->{
@@ -53,7 +56,7 @@ public class RmThree {
                 e.printStackTrace();
             }
         };
-        Thread mcgServer = new Thread(task4);
+        mcgServer = new Thread(task4);
         mcgServer.start();
 
         Runnable task5 = () ->{
@@ -63,7 +66,7 @@ public class RmThree {
                 e.printStackTrace();
             }
         };
-        Thread monServer = new Thread(task5);
+        monServer = new Thread(task5);
         monServer.start();
 
 		if(args.length != 0){
@@ -87,7 +90,7 @@ public class RmThree {
 			    while(recovering){
                     try {
                         sleep(1000);
-                        System.out.println("Recovering from failure");
+                        System.out.println("Waiting for recovering ...");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -131,7 +134,7 @@ public class RmThree {
 				String userID = parts[1]; 
 				
 				System.out.println(message);
-
+                history.add(message);
 				sendMessage(userID,message);
 				
 			}
@@ -148,6 +151,12 @@ public class RmThree {
 		}else if(libraryPrefix.equals("mon")) {
 			port = PortsAndIPs.RM3_MON_PortNum;
 		}
+        if(testMode){
+            if(libraryPrefix.equalsIgnoreCase(testServer)){
+                simulateFailure(message);
+            }
+            testMode = false;
+        }
 
 		DatagramSocket aSocket = null;
 		try {
@@ -169,7 +178,32 @@ public class RmThree {
 
 	}
 
-	private static void receiveFeedback() {
+    private static void simulateFailure(String message) {
+        String[] parts = message.split(";");
+        String serverName = parts[1].substring(0, Math.min(parts[1].length(), 3)).toLowerCase();
+        String randomResult = "Random result"+";"+"1"+";"+serverName;
+        int port = Integer.valueOf(message.split(";")[7]);
+        String hostName = message.split(";")[8];
+        DatagramSocket aSocket = null;
+        try {
+            aSocket = new DatagramSocket();
+            byte[] messageByte = randomResult.getBytes();
+            InetAddress aHost = InetAddress.getByName(hostName);
+            DatagramPacket request = new DatagramPacket(messageByte, messageByte.length, aHost, port);
+            aSocket.send(request);
+            System.out.println(message);
+        } catch (SocketException e) {
+            System.out.println("Socket: " + e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("IO: " + e.getMessage());
+        } finally {
+            if (aSocket != null)
+                aSocket.close();
+        }
+    }
+
+    private static void receiveFeedback() {
 		MulticastSocket fSocket = null;
 		try {
 			fSocket = new MulticastSocket(PortsAndIPs.RM_Feedback_Portnum);
@@ -201,7 +235,8 @@ public class RmThree {
 		String rmNum = parts[1];
 		if(rmNum.equalsIgnoreCase(rmName)){
 			consecutiveError ++;
-			if(consecutiveError >=3){
+            System.out.println("Handling fault result...");
+            if(consecutiveError >=3){
 				System.out.println("three consecutive incorrect result");
 				crashHandle(parts);
 			}
@@ -211,45 +246,60 @@ public class RmThree {
 	}
 
 	public static void crashHandle(String[] parts){
-		String rmNum = parts[1];
+        recovering = true;
+        String rmNum = parts[1];
 		String serverName = parts[2];
 		if(rmNum.equalsIgnoreCase(rmName)) {
-			//TODO : setting data after restart replica
 			if (serverName.equalsIgnoreCase("con")) {
-				Runnable task = () -> {
+                conServer.interrupt();
+                Runnable task = () -> {
 					try {
-						ConcordiaServer.main(new String[0]);
+						DLMS_Concordia_Server.main(new String[0]);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				};
-				Thread handleThread = new Thread(task);
-				handleThread.start();
+                conServer = new Thread(task);
+                conServer.start();
 				System.out.println("handle con server crash!");
 			} else if (serverName.equalsIgnoreCase("mcg")) {
-				Runnable task = () -> {
+                mcgServer.interrupt();
+                Runnable task = () -> {
 					try {
-						McgillServer.main(new String[0]);
+						DLMS_McGhill_Server.main(new String[0]);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				};
-				Thread handleThread = new Thread(task);
-				handleThread.start();
+                mcgServer = new Thread(task);
+                mcgServer.start();
 				System.out.println("handle mcg server crash!");
 			} else if (serverName.equalsIgnoreCase("mon")) {
-				Runnable task = () -> {
+                monServer.interrupt();
+                Runnable task = () -> {
 					try {
-						MontrealServer.main(new String[0]);
+						DLMS_Montreal_Server.main(new String[0]);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				};
-				Thread handleThread = new Thread(task);
-				handleThread.start();
+                monServer = new Thread(task);
+                monServer.start();
 				System.out.println("handle mon server crash!");
 			}
+            recoverServerData(serverName);
 
 		}
 	}
+    private static void recoverServerData(String serverName) {
+        System.out.println("Recovering data for server "+serverName);
+        for(String h:history){
+            String targetServer = h.split(";")[1];
+            if(targetServer.equalsIgnoreCase(serverName)){
+                sendMessage(targetServer,h);
+            }
+        }
+        recovering = false;
+        System.out.println("Recover done");
+    }
 }

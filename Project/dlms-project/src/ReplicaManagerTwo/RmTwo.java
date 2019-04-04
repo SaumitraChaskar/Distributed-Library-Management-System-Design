@@ -2,13 +2,11 @@ package ReplicaManagerTwo;
 
 import ReplicaManagerOne.Map.Message;
 import ReplicaManagerOne.Map.MessageComparator;
-import ReplicaManagerOne.Server.ConcordiaServer;
-import ReplicaManagerOne.Server.McgillServer;
-import ReplicaManagerOne.Server.MontrealServer;
 import Utils.PortsAndIPs;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 
@@ -17,12 +15,17 @@ import static java.lang.Thread.sleep;
 public class RmTwo {
 	private static int nextSequence = 1;
 	private static PriorityQueue<Message> pq = new PriorityQueue<Message>(20, new MessageComparator());
+	private static final String rmName = "2";
 
 	private static boolean testMode = false;
 	private static String testServer = "";
-    private static boolean recovering = false;
-    private static final String rmName = "2";
+	private static boolean recovering = false;
 	private static int consecutiveError = 0;
+	private static ArrayList<String> history = new ArrayList<>();
+
+	private static Thread conServer;
+	private static Thread mcgServer;
+	private static Thread monServer;
 	public static void main(String[] args) {
 		
 		Runnable task = () -> {
@@ -45,7 +48,7 @@ public class RmTwo {
 				e.printStackTrace();
 			}
 		};
-		Thread conServer = new Thread(task3);
+		conServer = new Thread(task3);
 		conServer.start();
 
 		Runnable task4 = () ->{
@@ -57,7 +60,7 @@ public class RmTwo {
 				e.printStackTrace();
 			}
 		};
-		Thread mcgServer = new Thread(task4);
+		mcgServer = new Thread(task4);
 		mcgServer.start();
 
 		Runnable task5 = () ->{
@@ -69,7 +72,7 @@ public class RmTwo {
 				e.printStackTrace();
 			}
 		};
-		Thread monServer = new Thread(task5);
+		monServer = new Thread(task5);
 		monServer.start();
 
 		if(args.length != 0){
@@ -93,7 +96,7 @@ public class RmTwo {
 			    while(recovering){
                     try {
                         sleep(1000);
-                        System.out.println("Recovering from failure");
+						System.out.println("Waiting for recovering ...");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -137,7 +140,7 @@ public class RmTwo {
 				String userID = parts[1]; 
 				
 				System.out.println(message);
-
+				history.add(message);
 				sendMessage(userID,message);
 				
 			}
@@ -153,6 +156,13 @@ public class RmTwo {
 			port = PortsAndIPs.RM2_MCG_PortNum;
 		}else if(libraryPrefix.equals("mon")) {
 			port = PortsAndIPs.RM2_MON_PortNum;
+		}
+		if(testMode){
+			System.out.println("Test mode start");
+			if(libraryPrefix.equalsIgnoreCase(testServer)){
+				simulateFailure(message);
+			}
+			testMode = false;
 		}
 
 		DatagramSocket aSocket = null;
@@ -173,6 +183,31 @@ public class RmTwo {
 				aSocket.close();
 		}
 
+	}
+
+	private static void simulateFailure(String message) {
+		String[] parts = message.split(";");
+		String serverName = parts[1].substring(0, Math.min(parts[1].length(), 3)).toLowerCase();
+		String randomResult = "Random result"+";"+"1"+";"+serverName;
+		int port = Integer.valueOf(message.split(";")[7]);
+		String hostName = message.split(";")[8];
+		DatagramSocket aSocket = null;
+		try {
+			aSocket = new DatagramSocket();
+			byte[] messageByte = randomResult.getBytes();
+			InetAddress aHost = InetAddress.getByName(hostName);
+			DatagramPacket request = new DatagramPacket(messageByte, messageByte.length, aHost, port);
+			aSocket.send(request);
+			System.out.println(message);
+		} catch (SocketException e) {
+			System.out.println("Socket: " + e.getMessage());
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("IO: " + e.getMessage());
+		} finally {
+			if (aSocket != null)
+				aSocket.close();
+		}
 	}
 
 	private static void receiveFeedback() {
@@ -207,6 +242,7 @@ public class RmTwo {
 		String rmNum = parts[1];
 		if(rmNum.equalsIgnoreCase(rmName)){
 			consecutiveError ++;
+			System.out.println("Handling fault result...");
 			if(consecutiveError >=3){
 				System.out.println("three consecutive incorrect result");
 				crashHandle(parts);
@@ -217,11 +253,12 @@ public class RmTwo {
 	}
 
 	public static void crashHandle(String[] parts){
+		recovering = true;
 		String rmNum = parts[1];
 		String serverName = parts[2];
 		if(rmNum.equalsIgnoreCase(rmName)) {
-			//TODO : setting data after restart replica
 			if (serverName.equalsIgnoreCase("con")) {
+				conServer.interrupt();
 				Runnable task = () -> {
 					try {
 						String[] args = new String[1];
@@ -231,10 +268,11 @@ public class RmTwo {
 						e.printStackTrace();
 					}
 				};
-				Thread handleThread = new Thread(task);
-				handleThread.start();
+				conServer = new Thread(task);
+				conServer.start();
 				System.out.println("handle con server crash!");
 			} else if (serverName.equalsIgnoreCase("mcg")) {
+				mcgServer.interrupt();
 				Runnable task = () -> {
 					try {
 						String[] args = new String[1];
@@ -244,10 +282,11 @@ public class RmTwo {
 						e.printStackTrace();
 					}
 				};
-				Thread handleThread = new Thread(task);
-				handleThread.start();
+				mcgServer = new Thread(task);
+				mcgServer.start();
 				System.out.println("handle mcg server crash!");
 			} else if (serverName.equalsIgnoreCase("mon")) {
+				monServer.interrupt();
 				Runnable task = () -> {
 					try {
 						String[] args = new String[1];
@@ -257,11 +296,24 @@ public class RmTwo {
 						e.printStackTrace();
 					}
 				};
-				Thread handleThread = new Thread(task);
-				handleThread.start();
+				monServer = new Thread(task);
+				monServer.start();
 				System.out.println("handle mon server crash!");
 			}
+			recoverServerData(serverName);
 
 		}
+	}
+
+	private static void recoverServerData(String serverName) {
+		System.out.println("Recovering data for server "+serverName);
+		for(String h:history){
+			String targetServer = h.split(";")[1];
+			if(targetServer.equalsIgnoreCase(serverName)){
+				sendMessage(targetServer,h);
+			}
+		}
+		recovering = false;
+		System.out.println("Recover done");
 	}
 }
