@@ -17,7 +17,7 @@ public class RmOne {
 	private static boolean testMode = false;
 	private static String testServer = "";
     private static boolean recovering = false;
-    private static final String rmName = "2";
+    private static final String rmName = "1";
 	private static int consecutiveError = 0;
 	public static void main(String[] args) {
 		
