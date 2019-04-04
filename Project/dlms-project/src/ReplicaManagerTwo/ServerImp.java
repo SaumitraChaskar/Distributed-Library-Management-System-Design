@@ -130,7 +130,7 @@ public class ServerImp {
 
     private static void Log(String serverID, String Message) throws Exception {
         final String dir = System.getProperty("user.dir");
-        String path = dir + "\\src\\ReplicaManagerTwo\\ServerLog\\" + serverID + "_Server.log";
+        String path = dir + "\\Project\\dlms-project\\src\\ReplicaManagerTwo\\ServerLog\\" + serverID + "_Server.log";
         FileWriter fileWriter = new FileWriter(path, true);
         BufferedWriter bf = new BufferedWriter(fileWriter);
         bf.write(Message + "\n");

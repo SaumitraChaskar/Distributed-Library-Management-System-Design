@@ -32,9 +32,36 @@ public class RmOne {
 		Thread thread1 = new Thread(task2);
 		thread1.start();
 
-		sendMessage("CONM1111", "Test");
-		sendMessage("MCGM1111", "Test");
-		sendMessage("MONM1111", "Test");
+		Runnable task3 = () ->{
+            try {
+                ConcordiaServer.main(new String[0]);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
+		Thread conServer = new Thread(task3);
+		conServer.start();
+
+        Runnable task4 = () ->{
+            try {
+                McgillServer.main(new String[0]);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
+        Thread mcgServer = new Thread(task4);
+        mcgServer.start();
+
+        Runnable task5 = () ->{
+            try {
+                MontrealServer.main(new String[0]);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
+        Thread monServer = new Thread(task5);
+        monServer.start();
+
 		if(args.length != 0){
 			testMode = true;
 			testServer = args[0].toUpperCase();

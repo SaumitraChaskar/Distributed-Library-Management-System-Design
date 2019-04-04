@@ -36,9 +36,42 @@ public class RmTwo {
 		Thread thread1 = new Thread(task2);
 		thread1.start();
 
-		sendMessage("CONM1111", "Test");
-		sendMessage("MCGM1111", "Test");
-		sendMessage("MONM1111", "Test");
+		Runnable task3 = () ->{
+			try {
+				String[] args1 = new String[1];
+				args1[0] = "CON";
+				Server.main(args1);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		};
+		Thread conServer = new Thread(task3);
+		conServer.start();
+
+		Runnable task4 = () ->{
+			try {
+				String[] args2 = new String[1];
+				args2[0] = "MCG";
+				Server.main(args2);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		};
+		Thread mcgServer = new Thread(task4);
+		mcgServer.start();
+
+		Runnable task5 = () ->{
+			try {
+				String[] args3 = new String[1];
+				args3[0] = "MON";
+				Server.main(args3);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		};
+		Thread monServer = new Thread(task5);
+		monServer.start();
+
 		if(args.length != 0){
 			testMode = true;
 			testServer = args[0].toUpperCase();
@@ -191,9 +224,9 @@ public class RmTwo {
 			if (serverName.equalsIgnoreCase("con")) {
 				Runnable task = () -> {
 					try {
-						String[] args = new String[0];
+						String[] args = new String[1];
 						args[0] = "CON";
-						ConcordiaServer.main(args);
+						Server.main(args);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -204,9 +237,9 @@ public class RmTwo {
 			} else if (serverName.equalsIgnoreCase("mcg")) {
 				Runnable task = () -> {
 					try {
-						String[] args = new String[0];
+						String[] args = new String[1];
 						args[0] = "MCG";
-						McgillServer.main(args);
+						Server.main(args);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -217,9 +250,9 @@ public class RmTwo {
 			} else if (serverName.equalsIgnoreCase("mon")) {
 				Runnable task = () -> {
 					try {
-						String[] args = new String[0];
+						String[] args = new String[1];
 						args[0] = "MON";
-						MontrealServer.main(args);
+						Server.main(args);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

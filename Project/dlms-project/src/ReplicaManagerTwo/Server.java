@@ -18,7 +18,7 @@ public class Server {
             System.out.println("Enter Campus");
             campus = sc.nextLine().toUpperCase();
         }else{
-            campus = args.toString().toUpperCase();
+            campus = args[0].toUpperCase();
         }
         ServerImp serverImp = new ServerImp();
         try{
