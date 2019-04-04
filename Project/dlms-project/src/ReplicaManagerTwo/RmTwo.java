@@ -115,7 +115,7 @@ public class RmTwo {
 		String libraryPrefix = userID.substring(0, Math.min(userID.length(), 3)).toLowerCase();
 		int port=0;
 		if(libraryPrefix.equals("con")) {
-			port = PortsAndIPs.RM2_MON_PortNum;
+			port = PortsAndIPs.RM2_CON_PortNum;
 		}else if(libraryPrefix.equals("mcg")) {
 			port = PortsAndIPs.RM2_MCG_PortNum;
 		}else if(libraryPrefix.equals("mon")) {

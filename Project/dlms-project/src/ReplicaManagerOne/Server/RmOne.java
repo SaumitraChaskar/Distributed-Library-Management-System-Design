@@ -111,7 +111,7 @@ public class RmOne {
 		String libraryPrefix = userID.substring(0, Math.min(userID.length(), 3)).toLowerCase();
 		int port=0;
 		if(libraryPrefix.equals("con")) {
-			port = PortsAndIPs.RM1_MON_PortNum;
+			port = PortsAndIPs.RM1_CON_PortNum;
 		}else if(libraryPrefix.equals("mcg")) {
 			port = PortsAndIPs.RM1_MCG_PortNum;
 		}else if(libraryPrefix.equals("mon")) {

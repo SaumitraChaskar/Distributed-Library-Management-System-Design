@@ -112,7 +112,7 @@ public class RmThree {
 		String libraryPrefix = userID.substring(0, Math.min(userID.length(), 3)).toLowerCase();
 		int port=0;
 		if(libraryPrefix.equals("con")) {
-			port = PortsAndIPs.RM3_MON_PortNum;
+			port = PortsAndIPs.RM3_CON_PortNum;
 		}else if(libraryPrefix.equals("mcg")) {
 			port = PortsAndIPs.RM3_MCG_PortNum;
 		}else if(libraryPrefix.equals("mon")) {
