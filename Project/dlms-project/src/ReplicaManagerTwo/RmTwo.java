@@ -163,26 +163,26 @@ public class RmTwo {
 				simulateFailure(message);
 			}
 			testMode = false;
-		}
+		}else {
 
-		DatagramSocket aSocket = null;
-		try {
-			aSocket = new DatagramSocket();
-			byte[] messageByte = message.getBytes();
-			InetAddress aHost = InetAddress.getByName("localhost");
-			DatagramPacket request = new DatagramPacket(messageByte, messageByte.length, aHost, port);
-			aSocket.send(request);
-			System.out.println(message);
-		} catch (SocketException e) {
-			System.out.println("Socket: " + e.getMessage());
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.out.println("IO: " + e.getMessage());
-		} finally {
-			if (aSocket != null)
-				aSocket.close();
-		}
-
+            DatagramSocket aSocket = null;
+            try {
+                aSocket = new DatagramSocket();
+                byte[] messageByte = message.getBytes();
+                InetAddress aHost = InetAddress.getByName("localhost");
+                DatagramPacket request = new DatagramPacket(messageByte, messageByte.length, aHost, port);
+                aSocket.send(request);
+                System.out.println(message);
+            } catch (SocketException e) {
+                System.out.println("Socket: " + e.getMessage());
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("IO: " + e.getMessage());
+            } finally {
+                if (aSocket != null)
+                    aSocket.close();
+            }
+        }
 	}
 
 	private static void simulateFailure(String message) {

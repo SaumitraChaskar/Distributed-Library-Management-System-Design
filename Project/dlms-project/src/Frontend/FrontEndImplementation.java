@@ -32,7 +32,7 @@ public class FrontEndImplementation extends ServerObjectInterfacePOA {
     }
 
     private void sendMessageAndReceive(String dataFromClient, ArrayList<String> result) {
-        ArrayList<DatagramPacket> packets = new ArrayList<>();
+        ArrayList<String> messages = new ArrayList<>();
         HashMap<String, Boolean> rmCheck = new HashMap<>();
         HashMap<String, Boolean> serverCheck = new HashMap<>();
         serverCheck.put("CON", false);
@@ -57,13 +57,13 @@ public class FrontEndImplementation extends ServerObjectInterfacePOA {
 
             byte[] buffer = new byte[1000];
 
-            while (packets.size() < CONSTANTS.TOTAL_REPLICA) {
+            while (messages.size() < CONSTANTS.TOTAL_REPLICA) {
                 DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
                 aSocket.receive(reply);
-                synchronized (this) {
-                    packets.add(reply);
-                }
                 String mess = new String(reply.getData(), 0, reply.getLength());
+                synchronized (this) {
+                    messages.add(mess);
+                }
                 System.out.println("reply : " +mess);
                 String[] parts = mess.split(";");
                 String rmNum = parts[1];
@@ -74,7 +74,7 @@ public class FrontEndImplementation extends ServerObjectInterfacePOA {
             }
 
             //check reply nums
-            if (packets.size() < CONSTANTS.TOTAL_REPLICA) {
+            if (messages.size() < CONSTANTS.TOTAL_REPLICA) {
                 ArrayList<String> lostRMs = new ArrayList<>();
                 for (Map.Entry<String, Boolean> entry : rmCheck.entrySet()) {
                     if (!entry.getValue()) {
@@ -91,7 +91,7 @@ public class FrontEndImplementation extends ServerObjectInterfacePOA {
                     informAllRMs(info);
                 }
             } else {//receive all three packets
-                chooseCorrectResult(packets, result);
+                chooseCorrectResult(messages, result);
             }
 
         } catch (SocketException e) {
@@ -106,18 +106,21 @@ public class FrontEndImplementation extends ServerObjectInterfacePOA {
 
     }
 
-    private void chooseCorrectResult(ArrayList<DatagramPacket> packets, ArrayList<String> result) {
-        assert (packets.size() == CONSTANTS.TOTAL_REPLICA) : "Wrong packets size: " + packets.size();
+    private void chooseCorrectResult(ArrayList<String> messages, ArrayList<String> result) {
+        assert (messages.size() == CONSTANTS.TOTAL_REPLICA) : "Wrong packets size: " + messages.size();
         String[] reply = new String[CONSTANTS.TOTAL_REPLICA];
         String[] rmNames = new String[CONSTANTS.TOTAL_REPLICA];
         String[] serverNames = new String[CONSTANTS.TOTAL_REPLICA];
-        for (int i = 0; i < packets.size(); i++) {
-            String[] parts = new String(packets.get(i).getData(), 0, packets.get(i).getLength()).split(";");
+        for (int i = 0; i < messages.size(); i++) {
+            String[] parts = messages.get(i).split(";");
+//            for(String s:parts){
+//                System.out.println("s : "+s);
+//            }
             reply[i] = parts[0];
             rmNames[i] = parts[1];
             serverNames[i] = parts[2];
         }
-        findMajorityElement(reply, packets.size(), rmNames, serverNames, result);
+        findMajorityElement(reply, messages.size(), rmNames, serverNames, result);
     }
 
     private void findMajorityElement(String[] reply, int n, String[] rmNames, String[] serverNames, ArrayList<String> result) {
