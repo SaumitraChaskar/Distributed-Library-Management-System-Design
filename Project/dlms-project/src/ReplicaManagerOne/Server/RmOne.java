@@ -232,11 +232,13 @@ public class RmOne {
 
 	private static void faultHandle(String[] parts) {
 		String rmNum = parts[1];
+        String serverName = parts[2];
+        System.out.println("RM :"+rmNum+" server :"+serverName+" produce incorrect result ");
 		if(rmNum.equalsIgnoreCase(rmName)){
 			consecutiveError ++;
 			System.out.println("Handling fault result...");
 			if(consecutiveError >=3){
-				System.out.println("three consecutive incorrect result");
+				System.out.println("Three consecutive incorrect result");
 				crashHandle(parts);
 			}
 		}else{
@@ -248,9 +250,11 @@ public class RmOne {
 		recovering = true;
 		String rmNum = parts[1];
 		String serverName = parts[2];
-		if(rmNum.equalsIgnoreCase(rmName)) {
+        System.out.println("Potential replica crash at RM : "+rmNum+" Server :"+serverName);
+        if(rmNum.equalsIgnoreCase(rmName)) {
 			if (serverName.equalsIgnoreCase("con")) {
-				conServer.interrupt();
+                System.out.println("Replacing con server ...");
+                conServer.interrupt();
 				Runnable task = () -> {
 					try {
 						ConcordiaServer.main(new String[0]);
@@ -260,10 +264,10 @@ public class RmOne {
 				};
 				conServer = new Thread(task);
 				conServer.start();
-				System.out.println("handle con server crash!");
 
 			} else if (serverName.equalsIgnoreCase("mcg")) {
-				mcgServer.interrupt();
+                System.out.println("Replacing mcg server ...");
+                mcgServer.interrupt();
 				Runnable task = () -> {
 					try {
 						McgillServer.main(new String[0]);
@@ -273,9 +277,9 @@ public class RmOne {
 				};
 				mcgServer = new Thread(task);
 				mcgServer.start();
-				System.out.println("handle mcg server crash!");
 			} else if (serverName.equalsIgnoreCase("mon")) {
-				monServer.interrupt();
+                System.out.println("Replacing mon server ...");
+                monServer.interrupt();
 				Runnable task = () -> {
 					try {
 						MontrealServer.main(new String[0]);
@@ -285,9 +289,9 @@ public class RmOne {
 				};
 				monServer = new Thread(task);
 				monServer.start();
-				System.out.println("handle mon server crash!");
 			}
 			recoverServerData(serverName);
+            System.out.println("Replacing done");
 
 		}
 	}

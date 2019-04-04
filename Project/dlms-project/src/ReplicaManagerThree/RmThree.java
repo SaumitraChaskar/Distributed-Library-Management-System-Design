@@ -84,7 +84,7 @@ public class RmThree {
 			aSocket.joinGroup(InetAddress.getByName(PortsAndIPs.RMGroupIPAddress));
 
 			byte[] buffer = new byte[1000];
-			System.out.println("RM1 UDP Server "+PortsAndIPs.RM_Group_PortNum+" Started............");
+			System.out.println("RM3 UDP Server "+PortsAndIPs.RM_Group_PortNum+" Started............");
 
 			while (true) {
 			    while(recovering){
@@ -233,11 +233,13 @@ public class RmThree {
 
 	private static void faultHandle(String[] parts) {
 		String rmNum = parts[1];
+        String serverName = parts[2];
+        System.out.println("RM :"+rmNum+" server :"+serverName+" produce incorrect result ");
 		if(rmNum.equalsIgnoreCase(rmName)){
 			consecutiveError ++;
             System.out.println("Handling fault result...");
             if(consecutiveError >=3){
-				System.out.println("three consecutive incorrect result");
+				System.out.println("Three consecutive incorrect result");
 				crashHandle(parts);
 			}
 		}else{
@@ -249,8 +251,10 @@ public class RmThree {
         recovering = true;
         String rmNum = parts[1];
 		String serverName = parts[2];
-		if(rmNum.equalsIgnoreCase(rmName)) {
+        System.out.println("Potential replica crash at RM : "+rmNum+" Server :"+serverName);
+        if(rmNum.equalsIgnoreCase(rmName)) {
 			if (serverName.equalsIgnoreCase("con")) {
+                System.out.println("Replacing con server ...");
                 conServer.interrupt();
                 Runnable task = () -> {
 					try {
@@ -261,8 +265,8 @@ public class RmThree {
 				};
                 conServer = new Thread(task);
                 conServer.start();
-				System.out.println("handle con server crash!");
 			} else if (serverName.equalsIgnoreCase("mcg")) {
+                System.out.println("Replacing mcg server ...");
                 mcgServer.interrupt();
                 Runnable task = () -> {
 					try {
@@ -273,8 +277,8 @@ public class RmThree {
 				};
                 mcgServer = new Thread(task);
                 mcgServer.start();
-				System.out.println("handle mcg server crash!");
 			} else if (serverName.equalsIgnoreCase("mon")) {
+                System.out.println("Replacing mon server ...");
                 monServer.interrupt();
                 Runnable task = () -> {
 					try {
@@ -285,12 +289,13 @@ public class RmThree {
 				};
                 monServer = new Thread(task);
                 monServer.start();
-				System.out.println("handle mon server crash!");
 			}
             recoverServerData(serverName);
+            System.out.println("Replacing done");
 
 		}
 	}
+
     private static void recoverServerData(String serverName) {
         System.out.println("Recovering data for server "+serverName);
         for(String h:history){
