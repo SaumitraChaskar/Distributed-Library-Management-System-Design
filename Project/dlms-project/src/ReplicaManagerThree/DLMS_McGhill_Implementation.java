@@ -394,7 +394,7 @@ public class DLMS_McGhill_Implementation
 			McghillSocket.receive(MonReceivePacket);
 			mon_message = new String(MonReceivePacket.getData());
 
-			message = "Concordia "+con_message+" Montreal "+mon_message+" McGill "+mcg_message;
+			message = "McGill "+mcg_message+" Concordia "+con_message+" Montreal "+mon_message;
 			McghillSocket.close();
 		}
 		catch (Exception e)

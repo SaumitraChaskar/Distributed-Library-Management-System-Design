@@ -384,7 +384,7 @@ public class DLMS_Montreal_Implementation
 			MontrealSocket.receive(MonReceivePacket);
 			mon_message = new String(MonReceivePacket.getData());
 
-			message = "Concordia "+con_message+" Montreal "+mon_message+" McGill "+mcg_message;
+			message = "Montreal "+mon_message+" Concordia "+con_message+" McGill "+mcg_message;
 			MontrealSocket.close();
 		}
 		catch (Exception e)

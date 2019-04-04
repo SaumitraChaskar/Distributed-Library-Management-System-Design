@@ -393,8 +393,8 @@ public class DLMS_Concordia_Implementation
 			DatagramPacket MonReceivePacket = new DatagramPacket(receiveData, receiveData.length);
 			ConcordiaSocket.receive(MonReceivePacket);
 			mon_message = new String(MonReceivePacket.getData());
-			
-			message = "Concordia "+con_message+" Montreal "+mon_message+" McGill "+mcg_message;
+
+			message = "Concordia "+con_message+" McGill "+mcg_message+" Montreal "+mon_message;
 			ConcordiaSocket.close();
 		}
 		catch (Exception e)

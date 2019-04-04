@@ -38,7 +38,7 @@ public class RmThree {
 
         Runnable task3 = () ->{
             try {
-                ConcordiaServer.main(new String[0]);
+                DLMS_Concordia_Server.main(new String[0]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -48,7 +48,7 @@ public class RmThree {
 
         Runnable task4 = () ->{
             try {
-                McgillServer.main(new String[0]);
+                DLMS_McGhill_Server.main(new String[0]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -58,7 +58,7 @@ public class RmThree {
 
         Runnable task5 = () ->{
             try {
-                MontrealServer.main(new String[0]);
+                DLMS_Montreal_Server.main(new String[0]);
             } catch (Exception e) {
                 e.printStackTrace();
             }

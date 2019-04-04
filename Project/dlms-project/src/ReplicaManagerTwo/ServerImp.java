@@ -535,15 +535,15 @@ public class ServerImp {
                 case "MCG": {
                     int serverport1 = 2234;
                     int serverport2 = 2236;
-                    result = " Montreal " + UDPRequest.UDPfindItem(command, serverport2) + " McGill " + result;
-                    result = "Concordia " + UDPRequest.UDPfindItem(command, serverport1) + result;
+                    result = "McGill " +result+" Concordia " + UDPRequest.UDPfindItem(command, serverport1);
+                    result += " Montreal " + UDPRequest.UDPfindItem(command, serverport2);
                     break;
                 }
                 default: {
                     int serverport1 = 2234;
                     int serverport2 = 2235;
-                    result = " Montreal " + result + " McGill " + UDPRequest.UDPfindItem(command, serverport2);
-                    result = "Concordia " + UDPRequest.UDPfindItem(command, serverport1) + result;
+                    result = "Montreal " + result +" Concordia " + UDPRequest.UDPfindItem(command, serverport1);
+                    result += " McGill " + UDPRequest.UDPfindItem(command, serverport2);
                     break;
                 }
             }
