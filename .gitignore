@@ -3,3 +3,7 @@ ServerLog/
 UserLog/
 .idea/
 out/
+*.iml
+*.log
+*.txt
+*.xml

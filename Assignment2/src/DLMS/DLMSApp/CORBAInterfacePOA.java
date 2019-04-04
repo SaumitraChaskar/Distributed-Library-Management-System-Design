@@ -1,4 +1,4 @@
-package DLMS;
+package DLMS.DLMSApp;
 
 
 /**
@@ -9,7 +9,7 @@ package DLMS;
 */
 
 public abstract class CORBAInterfacePOA extends org.omg.PortableServer.Servant
- implements DLMS.CORBAInterfaceOperations, org.omg.CORBA.portable.InvokeHandler
+ implements CORBAInterfaceOperations, org.omg.CORBA.portable.InvokeHandler
 {
 
   // Constructors
