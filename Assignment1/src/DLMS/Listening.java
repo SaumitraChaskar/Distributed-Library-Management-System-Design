@@ -10,9 +10,9 @@ public class Listening extends Thread {
     public Thread t;
     public String threadName;
     public DatagramSocket serversocket;
-    public ServerImp server;
+    public ServerImpl server;
 
-    public Listening(String threadName, DatagramSocket serversocket, ServerImp server){
+    public Listening(String threadName,DatagramSocket serversocket,ServerImpl server){
         this.serversocket = serversocket;
         this.server = server;
         this.threadName = threadName;
