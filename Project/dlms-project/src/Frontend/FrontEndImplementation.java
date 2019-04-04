@@ -64,6 +64,7 @@ public class FrontEndImplementation extends ServerObjectInterfacePOA {
                     packets.add(reply);
                 }
                 String mess = new String(reply.getData(), 0, reply.getLength());
+                System.out.println("reply : " +mess);
                 String[] parts = mess.split(";");
                 String rmNum = parts[1];
                 String serverName = parts[2];
@@ -104,6 +105,7 @@ public class FrontEndImplementation extends ServerObjectInterfacePOA {
         }
 
     }
+
     private void chooseCorrectResult(ArrayList<DatagramPacket> packets, ArrayList<String> result) {
         assert (packets.size() == CONSTANTS.TOTAL_REPLICA) : "Wrong packets size: " + packets.size();
         String[] reply = new String[CONSTANTS.TOTAL_REPLICA];
@@ -117,6 +119,7 @@ public class FrontEndImplementation extends ServerObjectInterfacePOA {
         }
         findMajorityElement(reply, packets.size(), rmNames, serverNames, result);
     }
+
     private void findMajorityElement(String[] reply, int n, String[] rmNames, String[] serverNames, ArrayList<String> result) {
         String major = null;
         // check if A[i] is majority element or not
@@ -149,12 +152,7 @@ public class FrontEndImplementation extends ServerObjectInterfacePOA {
 
         }
         System.out.println("major :" + major);
-        if (major != null) {
-            result.add(major);
-        } else {
-            System.out.println("no major");
-            //TODO:no major
-        }
+        result.add(major);
 
     }
 //    private void checkConsecutiveErrorRM(ArrayList<String> rmNames) {
@@ -166,7 +164,7 @@ public class FrontEndImplementation extends ServerObjectInterfacePOA {
 //                String rmName = entry.getKey();
 //                if (rmNames.contains(rmName)) {
 //                    if (incorrectRM.get(rmName) >= 3) {
-//                        informAllRMs();//TODO:found incorrect rm
+//                        informAllRMs();//
 //                        incorrectRM.remove(rmName);
 //                    } else {
 //                        incorrectRM.put(rmName, incorrectRM.get(rmName) + 1);
