@@ -191,7 +191,9 @@ public class RmTwo {
 			if (serverName.equalsIgnoreCase("con")) {
 				Runnable task = () -> {
 					try {
-						ConcordiaServer.main(new String[0]);
+						String[] args = new String[0];
+						args[0] = "CON";
+						ConcordiaServer.main(args);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -202,7 +204,9 @@ public class RmTwo {
 			} else if (serverName.equalsIgnoreCase("mcg")) {
 				Runnable task = () -> {
 					try {
-						McgillServer.main(new String[0]);
+						String[] args = new String[0];
+						args[0] = "MCG";
+						McgillServer.main(args);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -213,7 +217,9 @@ public class RmTwo {
 			} else if (serverName.equalsIgnoreCase("mon")) {
 				Runnable task = () -> {
 					try {
-						MontrealServer.main(new String[0]);
+						String[] args = new String[0];
+						args[0] = "MON";
+						MontrealServer.main(args);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
