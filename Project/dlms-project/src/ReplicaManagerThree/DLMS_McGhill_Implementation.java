@@ -831,7 +831,7 @@ public class DLMS_McGhill_Implementation
 		sdf.format(cal.getTime());
 
 
-		final String dir = System.getProperty("user.dir")+"\\src\\ReplicaManagerThree\\";
+		final String dir = System.getProperty("user.dir")+"\\Project\\dlms-project\\src\\ReplicaManagerThree\\";
 		File data_directory = new File(dir, "McGhill_Server_Log");
 		data_directory.mkdir();
 		File log_file = new File(data_directory, "McGhill_Client_"+userid+".txt");

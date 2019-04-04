@@ -835,7 +835,7 @@ public class DLMS_Concordia_Implementation
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		sdf.format(cal.getTime());
 
-		final String dir = System.getProperty("user.dir")+"\\src\\ReplicaManagerThree\\";
+		final String dir = System.getProperty("user.dir")+"\\Project\\dlms-project\\src\\ReplicaManagerThree\\";
 		File data_directory = new File(dir, "Concordia_Server_Log");
 		data_directory.mkdir();
 

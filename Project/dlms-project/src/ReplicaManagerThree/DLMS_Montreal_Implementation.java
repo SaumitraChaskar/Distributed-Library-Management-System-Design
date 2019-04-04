@@ -813,7 +813,7 @@ public class DLMS_Montreal_Implementation
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		sdf.format(cal.getTime());
 
-		final String dir = System.getProperty("user.dir")+"\\src\\ReplicaManagerThree\\";
+		final String dir = System.getProperty("user.dir")+"\\Project\\dlms-project\\src\\ReplicaManagerThree\\";
 		File data_directory = new File(dir, "Montreal_Server_Log");
 		data_directory.mkdir();
 		File log_file = new File(data_directory, "Montreal_Client_"+userid+".txt");

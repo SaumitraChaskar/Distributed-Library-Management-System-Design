@@ -439,13 +439,13 @@ public class ConcordiaClass{
 		final String dir = System.getProperty("user.dir");
 		String fileName = dir;
 		if(userPrefix.equals("con")) {
-			fileName = dir+"\\src\\ReplicaManagerOne\\Log\\Client\\Concordia\\"+userID+".txt";
+			fileName = dir+"\\Project\\dlms-project\\src\\ReplicaManagerOne\\Log\\Client\\Concordia\\"+userID+".txt";
 		}else if(userPrefix.equals("mcg")) 
 		{
-			fileName = dir+"\\src\\ReplicaManagerOne\\Log\\Client\\Mcgill\\"+userID+".txt";
+			fileName = dir+"\\Project\\dlms-project\\src\\ReplicaManagerOne\\Log\\Client\\Mcgill\\"+userID+".txt";
 		}else if(userPrefix.equals("mon")) 
 		{
-			fileName = dir+"\\src\\ReplicaManagerOne\\Log\\Client\\Montreal\\"+userID+".txt";
+			fileName = dir+"\\Project\\dlms-project\\src\\ReplicaManagerOne\\Log\\Client\\Montreal\\"+userID+".txt";
 		}
 
 
@@ -463,13 +463,13 @@ public class ConcordiaClass{
 		final String dir = System.getProperty("user.dir");
 		String fileName = dir;
 		if(userPrefix.equals("con")) {
-			fileName = dir+"\\src\\ReplicaManagerOne\\Log\\Server\\concordia.txt";
+			fileName = dir+"\\Project\\dlms-project\\src\\ReplicaManagerOne\\Log\\Server\\concordia.txt";
 		}else if(userPrefix.equals("mcg")) 
 		{
-			fileName = dir+"\\src\\ReplicaManagerOne\\Log\\Server\\mcgill.txt";
+			fileName = dir+"\\Project\\dlms-project\\src\\ReplicaManagerOne\\Log\\Server\\mcgill.txt";
 		}else if(userPrefix.equals("mon")) 
 		{
-			fileName = dir+"\\src\\ReplicaManagerOne\\Log\\Server\\montreal.txt";
+			fileName = dir+"\\Project\\dlms-project\\src\\ReplicaManagerOne\\Log\\Server\\montreal.txt";
 		}
 
 		Date date = new Date();
