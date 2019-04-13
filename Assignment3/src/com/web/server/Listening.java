@@ -1,4 +1,6 @@
-package assignment3;
+package com.web.server;
+
+import com.web.service.impl.Implementation;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -10,9 +12,9 @@ public class Listening extends Thread {
     public Thread t;
     public String threadName;
     public DatagramSocket serversocket;
-    public ServerImp server;
+    public Implementation server;
 
-    public Listening(String threadName, DatagramSocket serversocket, ServerImp server){
+    public Listening(String threadName, DatagramSocket serversocket, Implementation server){
         this.serversocket = serversocket;
         this.server = server;
         this.threadName = threadName;

@@ -1,4 +1,6 @@
-package assignment3;
+package com.web.server;
+
+import com.web.service.impl.Implementation;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -8,13 +10,13 @@ import java.net.InetAddress;
 public class RequestExecution extends Thread{
 
     public Thread t;
-    public ServerImp server;
+    public Implementation server;
     public DatagramSocket serversocket;
     public InetAddress address;
     public int clientport;
     String message;
 
-    public RequestExecution(ServerImp server, DatagramSocket serversocket, InetAddress address, int clientport, String message) {
+    public RequestExecution(Implementation server, DatagramSocket serversocket, InetAddress address, int clientport, String message) {
         super();
         this.address = address;
         this.message = message;
