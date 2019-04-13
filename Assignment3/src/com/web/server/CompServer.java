@@ -39,7 +39,7 @@ public class CompServer {
 					break;
 				default:
 					System.err.println("Server started failed");
-					main(new String[0]);
+					System.exit(42);
 			}
 
 			System.out.println("DLMS ready and waiting ...");
