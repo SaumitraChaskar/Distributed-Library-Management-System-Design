@@ -18,10 +18,17 @@ public class ManagerClient {
 	static WebInterface compInterface;
 
 	public static void main(String[] args) throws MalformedURLException {
-		System.out.println("Enter managerID:");
-		Scanner Id = new Scanner(System.in);
-		String managerID = Id.nextLine().toUpperCase();
-		String campus = managerID.substring(0,3);
+		String managerID;
+		String campus;
+		if(args.length==0){
+			System.out.println("Enter managerID:");
+			Scanner Id = new Scanner(System.in);
+			managerID = Id.nextLine().toUpperCase();
+			campus = managerID.substring(0,3);
+		}else{
+			managerID = args[0].toUpperCase();
+			campus = managerID.substring(0,3);
+		}
 		int addr = 0;
 
 		if(managerID.length() != 8) {

@@ -17,10 +17,17 @@ public class StudentClient {
 	static WebInterface compInterface;
 
 	public static void main(String[] args) throws MalformedURLException {
-		System.out.println("Enter StudentID:");
-		Scanner Id = new Scanner(System.in);
-		String studentID = Id.nextLine().toUpperCase();
-		String campus = studentID.substring(0,3);
+		String studentID;
+		String campus;
+		if(args.length == 0){
+			System.out.println("Enter StudentID:");
+			Scanner Id = new Scanner(System.in);
+			studentID = Id.nextLine().toUpperCase();
+			campus = studentID.substring(0,3);
+		}else{
+			studentID = args[0].toUpperCase();
+			campus = studentID.substring(0,3);
+		}
 		int addr = 0;
 
 		if(studentID.length() != 8) {
