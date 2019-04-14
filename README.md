@@ -20,4 +20,18 @@ DLMS Web Service
 
 #### Demo
 1.run server
+
 2.run client
+
+## Software Failure Tolerant and/or Highly Available DLMS
+
+#### Demo
+1.run RMOne RMTwo RMThree 
+
+2.run sequencer
+
+3.run startOrbd.bat (in Windows system)
+
+3.run FrontEnd with argument -ORBInitialPort 1050
+
+4.run client with argument -ORBInitialPort 1050
