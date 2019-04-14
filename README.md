@@ -14,3 +14,10 @@ DLMS with CORBA
 4.add run time argument -ORBInitialPort 1050 to clients
 
 5.run clients
+
+## Assignment 3
+DLMS Web Service
+
+#### Demo
+1.run server
+2.run client
