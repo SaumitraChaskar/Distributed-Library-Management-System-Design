@@ -231,7 +231,7 @@ public class Implementation implements WebInterface {
 		String error = "";
 		synchronized(this) {
 			if(items.containsKey(itemID)){
-				if(items.get(itemID).num > 0){
+				if(items.get(itemID).num >= 0){
 					if(intQuantity < 0 ){
 						//remove all
 						items.remove(itemID);
