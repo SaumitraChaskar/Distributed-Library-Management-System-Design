@@ -77,6 +77,7 @@ public class ManagerClient {
 				System.out.println("|2: RemoveItem               |");
 				System.out.println("|3: ListAllAvailability      |");
 				System.out.println("|4: Logout                   |");
+				System.out.println("|5: MultiThreadTest          |");
 				System.out.println("++++++++++++++++++++++++++++++");
 
 				Scanner s = new Scanner(System.in);
@@ -116,7 +117,7 @@ public class ManagerClient {
 						String addAction2 = " Manager ["+managerID+"] remove ["+removeQuantity+"] " +
 								"of item ["+removeItemID+"] from server ---> ";
 						String removeResult = compInterface.removeItem(managerID, removeItemID, removeQuantity);
-						if(removeResult.isEmpty()){
+						if(!removeResult.isEmpty()){
 							System.out.println(addAction2+"Success");
 							Log(managerID, getFormatDate()+addAction2+"Success");
 						}
@@ -139,6 +140,27 @@ public class ManagerClient {
 						break;
 					case 4:
 						main(new String[0]);
+					case 5:
+						Runnable task1 = ()->{
+							System.out.println("add test 1");
+							System.out.println(compInterface.addItem("CONM0000","CON0000","test1","1"));
+							System.out.println("end test 1");
+						};
+						Runnable task2 = () -> {
+							System.out.println("add test 2 ");
+							System.out.println(compInterface.removeItem("CONM0001","CON0000","1"));
+							System.out.println("end test 2");
+						};
+						Runnable task3 = () ->{
+							System.out.println("list test ");
+							System.out.println(compInterface.listItemAvailability("CONM0002"));
+							System.out.println("end list test");
+						};
+
+						new Thread(task1).start();
+						new Thread(task2).start();
+//						new Thread(task3).start();
+						break;
 					default:
 						break;
 				}
