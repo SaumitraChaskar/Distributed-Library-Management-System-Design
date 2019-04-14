@@ -808,42 +808,43 @@ public class DLMS_Montreal_Implementation
 
 	public static void serverlog(String userid, String item, String operation, String server_reply)
 	{
-		Logger log = Logger.getLogger(DLMS_Montreal_Implementation.class.getName());
-		Calendar cal = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		sdf.format(cal.getTime());
-
-		final String dir = System.getProperty("user.dir")+"\\Project\\dlms-project\\src\\ReplicaManagerThree\\";
-		File data_directory = new File(dir, "Montreal_Server_Log");
-		data_directory.mkdir();
-		File log_file = new File(data_directory, "Montreal_Client_"+userid+".txt");
-		try
-		{
-			log_file.createNewFile();
-		}
-		catch (IOException e)
-		{
-			System.out.println(e);
-		}
-		try
-		{
-			FileHandler fh;
-			String log_path= dir+"Montreal Server Log\\Montreal_Client_"+userid+".txt";
-			fh=new FileHandler(log_path, true);
-			log.addHandler(fh);
-			log.info("Date");
-			log.info(sdf.format(cal.getTime()));
-			log.info("Request");
-			log.info(operation);
-			log.info("Request ID");
-			log.info(userid);
-			log.info("Request Item");
-			log.info(item);
-			log.info("Server Response");
-			log.info(server_reply);
-		}
-		catch(Exception e)
-		{
-		}
+		return;
+//		Logger log = Logger.getLogger(DLMS_Montreal_Implementation.class.getName());
+//		Calendar cal = Calendar.getInstance();
+//		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+//		sdf.format(cal.getTime());
+//
+//		final String dir = System.getProperty("user.dir")+"\\Project\\dlms-project\\src\\ReplicaManagerThree\\";
+//		File data_directory = new File(dir, "Montreal_Server_Log");
+//		data_directory.mkdir();
+//		File log_file = new File(data_directory, "Montreal_Client_"+userid+".txt");
+//		try
+//		{
+//			log_file.createNewFile();
+//		}
+//		catch (IOException e)
+//		{
+//			System.out.println(e);
+//		}
+//		try
+//		{
+//			FileHandler fh;
+//			String log_path= dir+"Montreal Server Log\\Montreal_Client_"+userid+".txt";
+//			fh=new FileHandler(log_path, true);
+//			log.addHandler(fh);
+//			log.info("Date");
+//			log.info(sdf.format(cal.getTime()));
+//			log.info("Request");
+//			log.info(operation);
+//			log.info("Request ID");
+//			log.info(userid);
+//			log.info("Request Item");
+//			log.info(item);
+//			log.info("Server Response");
+//			log.info(server_reply);
+//		}
+//		catch(Exception e)
+//		{
+//		}
 	}
 }

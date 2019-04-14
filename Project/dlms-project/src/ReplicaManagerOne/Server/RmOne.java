@@ -70,6 +70,7 @@ public class RmOne {
 		if(args.length != 0){
 			testMode = true;
 			testServer = args[0].toUpperCase();
+			System.out.println("Test mode at server "+testServer);
 		}
 	}
 
@@ -154,7 +155,6 @@ public class RmOne {
 			if(libraryPrefix.equalsIgnoreCase(testServer)){
 				simulateFailure(message);
 			}
-			testMode = false;
 		}else {
 
             DatagramSocket aSocket = null;
@@ -213,7 +213,7 @@ public class RmOne {
 			while (true){
 				DatagramPacket request = new DatagramPacket(buffer, buffer.length);
 				fSocket.receive(request);
-
+                System.out.println("feedback request "+request);
 				String sentence = new String( request.getData(), 0,
 						request.getLength() );
 				String[] parts = sentence.split(";");
@@ -246,7 +246,7 @@ public class RmOne {
 		}
 	}
 
-	public static void crashHandle(String[] parts){
+	public static void  crashHandle(String[] parts){
 		recovering = true;
 		String rmNum = parts[1];
 		String serverName = parts[2];
@@ -254,7 +254,7 @@ public class RmOne {
         if(rmNum.equalsIgnoreCase(rmName)) {
 			if (serverName.equalsIgnoreCase("con")) {
                 System.out.println("Replacing con server ...");
-                conServer.interrupt();
+                //TODO:kill all thread to restart server
 				Runnable task = () -> {
 					try {
 						ConcordiaServer.main(new String[0]);
@@ -264,6 +264,7 @@ public class RmOne {
 				};
 				conServer = new Thread(task);
 				conServer.start();
+				testMode = false;
 
 			} else if (serverName.equalsIgnoreCase("mcg")) {
                 System.out.println("Replacing mcg server ...");

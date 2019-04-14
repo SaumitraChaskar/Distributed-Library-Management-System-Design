@@ -77,8 +77,9 @@ public class Client {
 			startSystem(ncRef);
 		}
 		ServerObjectInterface obj = (ServerObjectInterface) ServerObjectInterfaceHelper.narrow(ncRef.resolve_str(serverPort));
-		System.out.println("1. Borrow Item \n 2.Find Item \n 3. Return item \n 4. Exchange \n 5. Logout");
+		System.out.println(" ");
 		System.out.println("Select the option you want to do: ");
+		System.out.println("1. Borrow Item \n2.Find Item \n3. Return item \n4. Exchange \n5. Logout");
 		Scanner scanner = new Scanner(System.in);
 		String menuSelection = scanner.nextLine();
 
@@ -141,9 +142,10 @@ public class Client {
 			startSystem(ncRef);
 		}
 		ServerObjectInterface obj = (ServerObjectInterface) ServerObjectInterfaceHelper.narrow(ncRef.resolve_str(serverPort));
-		
-		System.out.println("1. Add Items \n 2.Remove Item \n 3. List of the items \n 4. Logout");
+
+		System.out.println(" ");
 		System.out.println("Select the option you want to do: ");
+		System.out.println("1. Add Items \n2. Remove Item \n3. List of the items \n4. Logout");
 		Scanner scanner = new Scanner(System.in);
 		String menuSelection = scanner.nextLine();
 		if(menuSelection.equals("1")) {
@@ -164,7 +166,6 @@ public class Client {
 		else if(menuSelection.equals("3")) {
 			System.out.println("Item List is given below. ");
 			System.out.println(obj.listItemAvailability(username));
-			System.out.println("To GO back press E and enter");
 			manager(username,ncRef);
 		}
 		else if (menuSelection.equals("4")) {
