@@ -1,4 +1,4 @@
-# Distributed System Design
+# Distributed Library Management System
 ## Assignment 1 
 DLMS with JavaRMI
 
